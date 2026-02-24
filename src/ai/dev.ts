@@ -8,3 +8,4 @@ import '@/ai/flows/ai-speaking-examination.ts';
 import '@/ai/flows/ai-tts.ts';
 import '@/ai/flows/ai-reading-comprehension.ts';
 import '@/ai/flows/ai-diary-generator.ts';
+import '@/ai/flows/ai-scenario-analysis.ts';

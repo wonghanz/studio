@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect } from 'react'
@@ -5,7 +6,7 @@ import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { BookOpen, PenTool, Mic, Headphones, BarChart, Calendar, ArrowRight, Star } from 'lucide-react'
+import { BookOpen, PenTool, Mic, Headphones, BarChart, Calendar, ArrowRight, Star, Camera, Zap } from 'lucide-react'
 
 export default function Dashboard() {
   const [userName, setUserName] = useState('Scholar')
@@ -17,11 +18,10 @@ export default function Dashboard() {
   }, [])
 
   const mainActions = [
-    { title: 'Today\'s Diary', desc: 'New story waiting', icon: Star, color: 'text-yellow-500', bg: 'bg-yellow-50', href: '/diary' },
+    { title: 'Scene Guide', desc: 'Analyze real scenarios', icon: Camera, color: 'text-red-500', bg: 'bg-red-50', href: '/ar-mode', featured: true },
+    { title: 'Daily Diary', desc: 'Today\'s pick', icon: Star, color: 'text-yellow-500', bg: 'bg-yellow-50', href: '/diary' },
     { title: 'Speaking', desc: 'Mock examination', icon: Mic, color: 'text-primary', bg: 'bg-primary/10', href: '/speaking' },
     { title: 'Writing', desc: 'Essay practice', icon: PenTool, color: 'text-accent', bg: 'bg-accent/10', href: '/writing' },
-    { title: 'Reading', desc: 'Comprehension', icon: BookOpen, color: 'text-blue-500', bg: 'bg-blue-50', href: '/diary' },
-    { title: 'Listening', desc: 'Audio tasks', icon: Headphones, color: 'text-purple-500', bg: 'bg-purple-50', href: '/listening' },
   ]
 
   return (
@@ -65,8 +65,11 @@ export default function Dashboard() {
         {mainActions.map((action) => {
           const Icon = action.icon
           return (
-            <Link key={action.title} href={action.href}>
-              <Card className="hover:shadow-md transition-all active:scale-95 cursor-pointer h-full border-none shadow-sm">
+            <Link key={action.title} href={action.href} className={action.featured ? "md:col-span-1" : ""}>
+              <Card className={`hover:shadow-md transition-all active:scale-95 cursor-pointer h-full border-none shadow-sm relative overflow-hidden ${action.featured ? 'border-2 border-red-100' : ''}`}>
+                {action.featured && (
+                  <div className="absolute top-0 right-0 bg-red-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-bl-lg">NEW</div>
+                )}
                 <CardContent className="pt-6">
                   <div className={`w-12 h-12 rounded-2xl ${action.bg} flex items-center justify-center mb-4`}>
                     <Icon className={`w-6 h-6 ${action.color}`} />
@@ -95,13 +98,16 @@ export default function Dashboard() {
 
       <section className="space-y-4">
         <h2 className="text-xl font-bold flex items-center gap-2">
-          <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-          Featured Tip
+          <Zap className="w-5 h-5 text-accent" />
+          Quick Tip
         </h2>
         <Card className="bg-white/50 border-dashed">
-          <CardContent className="p-4">
-            <p className="text-sm italic">
-              "To improve coherence in writing, try using a variety of cohesive devices like 'moreover', 'consequently', and 'nevertheless' to link your ideas logically."
+          <CardContent className="p-4 flex gap-4 items-start">
+             <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                <Camera className="w-5 h-5 text-accent" />
+             </div>
+             <p className="text-sm italic text-muted-foreground leading-relaxed">
+              "Use the <strong>Scene Guide</strong> when you're out! Taking a photo of a real-life event helps you build vocabulary that you actually need in real conversations."
             </p>
           </CardContent>
         </Card>

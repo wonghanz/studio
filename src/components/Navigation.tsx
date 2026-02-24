@@ -1,16 +1,17 @@
+
 "use client"
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, BookOpen, PenTool, Mic, BarChart, Settings } from 'lucide-react'
+import { Home, BookOpen, PenTool, Mic, BarChart, Settings, Camera } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
   { href: '/dashboard', label: 'Home', icon: Home },
+  { href: '/ar-mode', label: 'Lens', icon: Camera },
   { href: '/diary', label: 'Diary', icon: BookOpen },
   { href: '/writing', label: 'Write', icon: PenTool },
   { href: '/speaking', label: 'Speak', icon: Mic },
-  { href: '/progress', label: 'Stats', icon: BarChart },
 ]
 
 export function BottomNav() {
@@ -73,6 +74,18 @@ export function Sidebar() {
             </Link>
           )
         })}
+        <Link
+          href="/progress"
+          className={cn(
+            "flex items-center gap-3 px-3 py-2 rounded-lg transition-all",
+            pathname === '/progress' 
+              ? "bg-primary text-primary-foreground shadow-md" 
+              : "text-muted-foreground hover:bg-secondary hover:text-primary"
+          )}
+        >
+          <BarChart className="h-5 w-5" />
+          <span className="font-medium">Statistics</span>
+        </Link>
       </div>
 
       <Link
