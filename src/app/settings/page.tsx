@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { useToast } from '@/hooks/use-toast'
-import { LogOut, Globe, Bell, Shield, Info, CloudSync } from 'lucide-react'
+import { LogOut, Globe, Bell, Shield, Info, Cloud } from 'lucide-react'
 
 export default function SettingsPage() {
   const [examTarget, setExamTarget] = useState('IELTS')
@@ -75,7 +75,7 @@ export default function SettingsPage() {
         <Card className="border-none shadow-sm">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <CloudSync className="w-5 h-5" />
+              <Cloud className="w-5 h-5" />
               Data Management
             </CardTitle>
           </CardHeader>
