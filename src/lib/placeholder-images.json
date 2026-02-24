@@ -23,6 +23,18 @@
       "description": "Daily Diary Story cover",
       "imageUrl": "https://images.unsplash.com/photo-1588243291559-c4a0c36bc2dc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxyZWFkaW5nJTIwYm9va3xlbnwwfHx8fDE3NzE5NDUxMTF8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "reading book"
+    },
+    {
+      "id": "news-theme",
+      "description": "Modern News Illustration",
+      "imageUrl": "https://images.unsplash.com/photo-1504711434969-e33886168f5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxuZXdzfGVufDB8fHx8MTc3MTk0NTM1Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "global news"
+    },
+    {
+      "id": "trend-theme",
+      "description": "Social Media Trends",
+      "imageUrl": "https://images.unsplash.com/photo-1516251193007-45ef94438399?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx0cmVuZHN8ZW58MHx8fHwxNzcxOTQ1MzU2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tech trends"
     }
   ]
 }
