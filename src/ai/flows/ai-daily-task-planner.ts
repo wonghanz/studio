@@ -11,8 +11,8 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
 const AiDailyTaskPlannerInputSchema = z.object({
-  targetExam: z.enum(['MUET', 'IELTS']).describe('The target English proficiency exam (MUET or IELTS).'),
-  userProgressSummary: z.string().describe('A summary of the user\u0027s current band scores, identified strengths, and weaknesses across English skills.'),
+  targetExam: z.enum(['MUET', 'SPM']).describe('The target English proficiency exam (MUET or SPM).'),
+  userProgressSummary: z.string().describe('A summary of the user\'s current band scores, identified strengths, and weaknesses across English skills.'),
 });
 export type AiDailyTaskPlannerInput = z.infer<typeof AiDailyTaskPlannerInputSchema>;
 
@@ -43,7 +43,7 @@ Their current progress and identified strengths and weaknesses are summarized as
 
 Based on this information, create a daily study plan consisting of a list of tasks. Each task should specify its type (Speaking, Writing, Reading, or Listening), a detailed description of the activity, and an optional estimated duration in minutes.
 
-Focus on recommending tasks that directly address the student's weaknesses and align with the requirements of their target exam (MUET or IELTS).
+Focus on recommending tasks that directly address the student's weaknesses and align with the requirements of their target exam (MUET or SPM).
 
 Generate the plan in JSON format conforming to the following schema:
 `,

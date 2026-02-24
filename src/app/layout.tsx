@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'NATIVE Learn - Your AI English Companion',
-  description: 'AI-powered English proficiency preparation for MUET and IELTS.',
+  description: 'AI-powered English proficiency preparation for MUET and SPM level English.',
 };
 
 export default function RootLayout({

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Button } from '@/components/ui/button'
@@ -10,11 +10,11 @@ import { useToast } from '@/hooks/use-toast'
 import { LogOut, Globe, Bell, Shield, Info, Cloud } from 'lucide-react'
 
 export default function SettingsPage() {
-  const [examTarget, setExamTarget] = useState('IELTS')
+  const [examTarget, setExamTarget] = useState('SPM')
   const { toast } = useToast()
 
   useEffect(() => {
-    const saved = localStorage.getItem('native_exam_target') || 'IELTS'
+    const saved = localStorage.getItem('native_exam_target') || 'SPM'
     setExamTarget(saved)
   }, [])
 
@@ -49,13 +49,13 @@ export default function SettingsPage() {
           <CardContent>
             <RadioGroup value={examTarget} onValueChange={saveExamTarget} className="grid grid-cols-2 gap-4">
               <div>
-                <RadioGroupItem value="IELTS" id="ielts" className="peer sr-only" />
+                <RadioGroupItem value="SPM" id="spm" className="peer sr-only" />
                 <Label
-                  htmlFor="ielts"
+                  htmlFor="spm"
                   className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                 >
-                  <span className="text-sm font-bold">IELTS</span>
-                  <span className="text-[10px] opacity-60 mt-1">International Standard</span>
+                  <span className="text-sm font-bold">SPM</span>
+                  <span className="text-[10px] opacity-60 mt-1">Secondary School Level</span>
                 </Label>
               </div>
               <div>

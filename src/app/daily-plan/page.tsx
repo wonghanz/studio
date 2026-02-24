@@ -17,7 +17,7 @@ export default function DailyPlanPage() {
   const fetchPlan = async () => {
     setLoading(true)
     try {
-      const examType = (localStorage.getItem('native_exam_target') as 'MUET' | 'IELTS') || 'IELTS'
+      const examType = (localStorage.getItem('native_exam_target') as 'MUET' | 'SPM') || 'SPM'
       const result = await aiDailyTaskPlanner({
         targetExam: examType,
         userProgressSummary: "The student has a decent vocabulary but struggles with fluency in speaking and logical flow in writing. Reading comprehension is strong."

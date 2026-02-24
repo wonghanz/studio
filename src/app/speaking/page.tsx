@@ -2,10 +2,10 @@
 
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Mic, Square, Play, Trash2, Loader2, BarChart, Sparkles } from 'lucide-react'
+import { Mic, Square, Loader2, BarChart, Sparkles, Trash2, Star } from 'lucide-react'
 import { aiSpeakingExamination, type AiSpeakingExaminationOutput } from '@/ai/flows/ai-speaking-examination'
 
 export default function SpeakingPage() {
@@ -61,7 +61,7 @@ export default function SpeakingPage() {
       reader.readAsDataURL(blob)
       reader.onloadend = async () => {
         const base64data = reader.result as string
-        const examType = (localStorage.getItem('native_exam_target') as 'MUET' | 'IELTS') || 'IELTS'
+        const examType = (localStorage.getItem('native_exam_target') as 'MUET' | 'SPM') || 'SPM'
         
         const result = await aiSpeakingExamination({
           audioDataUri: base64data,
@@ -182,11 +182,11 @@ export default function SpeakingPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-primary">
                 <Star className="w-5 h-5" />
-                Model Band 5 Answer
+                Model Answer
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm italic leading-relaxed opacity-80">"{feedback.modelBand5Answer}"</p>
+              <p className="text-sm italic leading-relaxed opacity-80">"{feedback.modelAnswer}"</p>
             </CardContent>
           </Card>
         </div>

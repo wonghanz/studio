@@ -9,10 +9,10 @@ import { BookOpen, PenTool, Mic, Headphones, BarChart, Calendar, ArrowRight, Sta
 
 export default function Dashboard() {
   const [userName, setUserName] = useState('Scholar')
-  const [examTarget, setExamTarget] = useState('IELTS')
+  const [examTarget, setExamTarget] = useState('SPM')
 
   useEffect(() => {
-    const savedTarget = localStorage.getItem('native_exam_target') || 'IELTS'
+    const savedTarget = localStorage.getItem('native_exam_target') || 'SPM'
     setExamTarget(savedTarget)
   }, [])
 
@@ -49,7 +49,7 @@ export default function Dashboard() {
               <Calendar className="w-5 h-5" />
               Your Daily Plan
             </CardTitle>
-            <CardDescription className="text-primary-foreground/80">3 tasks remaining for today</CardDescription>
+            <CardDescription className="text-primary-foreground/80">Tasks remaining for today</CardDescription>
           </CardHeader>
           <CardContent className="relative z-10">
             <Link href="/daily-plan">
@@ -87,7 +87,7 @@ export default function Dashboard() {
                 <BarChart className="w-6 h-6" />
               </div>
               <h3 className="font-semibold text-lg">My Progress</h3>
-              <p className="text-sm text-muted-foreground">View band score trends</p>
+              <p className="text-sm text-muted-foreground">View performance trends</p>
             </CardContent>
           </Link>
         </Card>

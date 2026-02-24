@@ -43,7 +43,7 @@ export default function WritingPage() {
 
     setIsEvaluating(true)
     try {
-      const examType = (localStorage.getItem('native_exam_target') as 'MUET' | 'IELTS') || 'IELTS'
+      const examType = (localStorage.getItem('native_exam_target') as 'MUET' | 'SPM') || 'SPM'
       const result = await aiWritingFeedback({ essayText: essay, examType })
       setFeedback(result)
       toast({ title: "Evaluation complete!", description: "Check your feedback below." })
@@ -118,8 +118,8 @@ export default function WritingPage() {
             <Card className="border-accent shadow-md bg-accent/5 animate-in slide-in-from-right-4">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="default" className="bg-accent">Band Score</Badge>
-                  <span className="text-2xl font-bold text-accent">{feedback.bandScore}</span>
+                  <Badge variant="default" className="bg-accent">Evaluation</Badge>
+                  <span className="text-2xl font-bold text-accent">{feedback.score}</span>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4 max-h-[400px] overflow-auto pr-2">

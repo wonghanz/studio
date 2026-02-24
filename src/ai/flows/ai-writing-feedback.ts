@@ -12,12 +12,12 @@ import {z} from 'genkit';
 
 const AiWritingFeedbackInputSchema = z.object({
   essayText: z.string().describe('The student\'s essay text to be evaluated.'),
-  examType: z.enum(['MUET', 'IELTS']).describe('The target exam for the evaluation (MUET or IELTS).'),
+  examType: z.enum(['MUET', 'SPM']).describe('The target exam for the evaluation (MUET or SPM).'),
 });
 export type AiWritingFeedbackInput = z.infer<typeof AiWritingFeedbackInputSchema>;
 
 const AiWritingFeedbackOutputSchema = z.object({
-  bandScore: z.number().describe('The overall band score awarded for the essay.'),
+  score: z.string().describe('The overall grade or band score awarded for the essay (e.g., "A", "Band 4").'),
   feedback: z.string().describe('Detailed rubric-based feedback on the essay, covering areas like task achievement, coherence, vocabulary, and grammar.'),
   strengths: z.array(z.string()).describe('List of key strengths identified in the essay.'),
   weaknesses: z.array(z.string()).describe('List of key weaknesses identified in the essay, with suggestions for improvement.'),
@@ -36,7 +36,7 @@ const prompt = ai.definePrompt({
 
 Evaluate the following essay based on the official {{{examType}}} writing rubric, focusing on Task Achievement/Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy.
 
-Provide an overall band score (e.g., 5, 6.5, 7), detailed rubric-based feedback, and explicitly list the essay's strengths and weaknesses with actionable improvement suggestions.
+Provide an overall grade or band score (e.g., A, B+, or Band 4), detailed rubric-based feedback, and explicitly list the essay's strengths and weaknesses with actionable improvement suggestions.
 
 Essay:
 {{{essayText}}}`,
