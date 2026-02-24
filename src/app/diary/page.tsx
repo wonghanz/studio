@@ -1,22 +1,60 @@
+
 "use client"
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
-import { Mic, PenTool, BookOpen, Headphones, ChevronRight, PlayCircle } from 'lucide-react'
+import { Mic, PenTool, BookOpen, Headphones, ChevronRight, PlayCircle, Loader2, PauseCircle } from 'lucide-react'
+import { aiTts } from '@/ai/flows/ai-tts'
+import { useToast } from '@/hooks/use-toast'
 
 export default function DiaryPage() {
-  const [activeStep, setActiveStep] = useState('reading')
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false)
+  const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const { toast } = useToast()
 
   const diaryContent = {
     title: "The Silent Forest",
     author: "Malaysian Wildlife Chronicles",
     content: "Deep within the heart of the Belum-Temengor Forest Complex, the morning mist clings to the giant Tualang trees like a heavy blanket. It was here that I first understood the true meaning of silence—not the absence of noise, but the presence of life waiting to be heard. As a conservationist, my daily entries often record the sightings of rare hornbills or the distant calls of gibbons, but today was different...",
-    audioUrl: "#",
+    fullText: `Deep within the heart of the Belum-Temengor Forest Complex, the morning mist clings to the giant Tualang trees like a heavy blanket. It was here that I first understood the true meaning of silence—not the absence of noise, but the presence of life waiting to be heard. As a conservationist, my daily entries often record the sightings of rare hornbills or the distant calls of gibbons, but today was different. I found tracks of the Malayan tiger near the riverbank. They were fresh, etched clearly into the soft mud. The locals say the tiger is a spirit of the forest, a guardian of the balance. In my diary, I wrote: "We are but visitors in this ancient realm, and our survival depends on how well we listen to its secrets."`
+  }
+
+  const toggleAudio = async () => {
+    if (audioUrl) {
+      if (isPlaying) {
+        audioRef.current?.pause()
+      } else {
+        audioRef.current?.play()
+      }
+      setIsPlaying(!isPlaying)
+      return
+    }
+
+    setIsLoadingAudio(true)
+    try {
+      const result = await aiTts({ text: diaryContent.fullText })
+      setAudioUrl(result.media)
+      setIsPlaying(true)
+      // Use setTimeout to allow the audio element to be updated with the new source
+      setTimeout(() => {
+        audioRef.current?.play()
+      }, 100)
+    } catch (error) {
+      toast({
+        title: "Audio generation failed",
+        description: "Could not generate speech for this story.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsLoadingAudio(false)
+    }
   }
 
   return (
@@ -49,11 +87,31 @@ export default function DiaryPage() {
               <h2 className="text-3xl font-bold">{diaryContent.title}</h2>
               <p className="opacity-80 text-sm">By {diaryContent.author}</p>
             </div>
-            <Button size="icon" className="rounded-full w-12 h-12 bg-white text-primary hover:bg-secondary">
-              <PlayCircle className="w-8 h-8" />
+            <Button 
+              size="icon" 
+              onClick={toggleAudio}
+              disabled={isLoadingAudio}
+              className="rounded-full w-12 h-12 bg-white text-primary hover:bg-secondary"
+            >
+              {isLoadingAudio ? (
+                <Loader2 className="w-6 h-6 animate-spin" />
+              ) : isPlaying ? (
+                <PauseCircle className="w-8 h-8" />
+              ) : (
+                <PlayCircle className="w-8 h-8" />
+              )}
             </Button>
           </div>
         </div>
+
+        {audioUrl && (
+          <audio 
+            ref={audioRef} 
+            src={audioUrl} 
+            onEnded={() => setIsPlaying(false)} 
+            className="hidden" 
+          />
+        )}
 
         <CardContent className="p-8 space-y-6">
           <div className="prose prose-slate max-w-none">
@@ -68,17 +126,25 @@ export default function DiaryPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t">
             {[
               { label: 'Read', icon: BookOpen, color: 'text-blue-500', bg: 'bg-blue-50', href: '/diary/questions' },
-              { label: 'Listen', icon: Headphones, color: 'text-purple-500', bg: 'bg-purple-50', href: '/listening' },
+              { label: 'Listen', icon: Headphones, color: 'text-purple-500', bg: 'bg-purple-50', onClick: toggleAudio },
               { label: 'Speak', icon: Mic, color: 'text-primary', bg: 'bg-primary/10', href: '/speaking' },
               { label: 'Write', icon: PenTool, color: 'text-accent', bg: 'bg-accent/10', href: '/writing' },
-            ].map((action) => (
-              <Link key={action.label} href={action.href}>
-                <Button variant="ghost" className={`w-full h-auto flex-col gap-2 p-4 rounded-2xl ${action.bg} hover:bg-white border-2 border-transparent hover:border-border transition-all`}>
-                  <action.icon className={`w-6 h-6 ${action.color}`} />
-                  <span className="font-semibold">{action.label}</span>
-                </Button>
-              </Link>
-            ))}
+            ].map((action) => {
+              const Comp = action.href ? Link : 'button'
+              return (
+                <Comp 
+                  key={action.label} 
+                  href={action.href || '#'} 
+                  onClick={action.onClick}
+                  className="w-full"
+                >
+                  <Button variant="ghost" className={`w-full h-auto flex-col gap-2 p-4 rounded-2xl ${action.bg} hover:bg-white border-2 border-transparent hover:border-border transition-all`}>
+                    <action.icon className={`w-6 h-6 ${action.color}`} />
+                    <span className="font-semibold">{action.label}</span>
+                  </Button>
+                </Comp>
+              )
+            })}
           </div>
         </CardContent>
       </Card>
