@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Loader2, Save, Send, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Loader2, Save, Send, CheckCircle2, AlertCircle, PenTool } from 'lucide-react'
 import { aiWritingFeedback, type AiWritingFeedbackOutput } from '@/ai/flows/ai-writing-feedback'
 
 export default function WritingPage() {
