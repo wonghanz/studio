@@ -86,7 +86,7 @@ export default function WritingSelectionPage() {
             <span className="text-xs font-bold uppercase tracking-widest">Global Streak</span>
           </div>
           <h2 className="text-2xl font-bold">Consistency is Key</h2>
-          <p className="text-sm opacity-70 max-w-md">Writing just 150 words a day can improve your CEFR level significantly in just 3 months.</p>
+          <p className="text-sm opacity-70 max-w-md">Writing just 150 words a day can improve your CEFR and Band level significantly in just 3 months.</p>
         </div>
       </section>
     </div>
