@@ -32,7 +32,7 @@ export default function SplashPage() {
         <div className="absolute -inset-4 bg-primary/20 blur-xl rounded-full" />
         <Image
           src={PlaceHolderImages[0].imageUrl}
-          alt="NATIVE Learn Logo"
+          alt="NATIVE Logo"
           width={150}
           height={150}
           className="rounded-3xl shadow-2xl relative"
@@ -41,7 +41,7 @@ export default function SplashPage() {
         />
       </div>
       <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        <h1 className="text-4xl font-bold text-primary tracking-tight">NATIVE Learn</h1>
+        <h1 className="text-4xl font-bold text-primary tracking-tight">NATIVE</h1>
         <p className="text-lg text-muted-foreground font-medium flex items-center justify-center gap-2">
           <Sparkles className="w-5 h-5 text-accent" />
           Your AI English Companion

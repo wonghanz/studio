@@ -51,7 +51,7 @@ export function Sidebar() {
     <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white border-r border-border p-4 z-50">
       <div className="flex items-center gap-2 mb-8 px-2">
         <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">N</div>
-        <span className="font-bold text-xl text-primary">NATIVE Learn</span>
+        <span className="font-bold text-xl text-primary">NATIVE</span>
       </div>
       
       <div className="flex-1 space-y-2">

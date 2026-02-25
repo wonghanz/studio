@@ -1,5 +1,5 @@
 
-# NATIVE Learn (NextJS)
+# NATIVE (NextJS)
 
 This is a demonstration prototype for NATIVE (National AI for Targeted In-situ Vocabulary & English), an AI-powered English proficiency companion.
 
