@@ -1,8 +1,10 @@
+
 import type { Metadata } from 'next';
 import './globals.css';
 import { BottomNav, Sidebar } from '@/components/Navigation';
 import { Toaster } from '@/components/ui/toaster';
 import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';
+import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
   title: `${APP_NAME} - Your AI English Companion`,
@@ -22,14 +24,16 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased bg-background">
-        <div className="flex min-h-screen">
-          <Sidebar />
-          <main className="flex-1 md:ml-64 mb-16 md:mb-0">
-            {children}
-          </main>
-        </div>
-        <BottomNav />
-        <Toaster />
+        <FirebaseClientProvider>
+          <div className="flex min-h-screen">
+            <Sidebar />
+            <main className="flex-1 md:ml-64 mb-16 md:mb-0">
+              {children}
+            </main>
+          </div>
+          <BottomNav />
+          <Toaster />
+        </FirebaseClientProvider>
       </body>
     </html>
   );
