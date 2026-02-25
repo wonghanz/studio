@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useEffect } from 'react'
@@ -11,12 +12,15 @@ export default function SplashPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Logic for first-time user vs returning user could go here
       const hasOnboarded = localStorage.getItem('native_onboarded')
-      if (hasOnboarded) {
-        router.push('/dashboard')
-      } else {
+      const hasSeenIntro = localStorage.getItem('native_intro_seen')
+      
+      if (!hasOnboarded) {
         router.push('/onboarding')
+      } else if (!hasSeenIntro) {
+        router.push('/intro')
+      } else {
+        router.push('/dashboard')
       }
     }, 2500)
     return () => clearTimeout(timer)

@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from 'react'
@@ -38,7 +39,7 @@ export default function Onboarding() {
       setCurrentSlide(currentSlide + 1)
     } else {
       localStorage.setItem('native_onboarded', 'true')
-      router.push('/dashboard')
+      router.push('/intro')
     }
   }
 
