@@ -10,7 +10,10 @@ import { PlaceHolderImages } from '@/lib/placeholder-images'
 
 export default function IntroPage() {
   const router = useRouter()
-  const analyticsImage = PlaceHolderImages.find(img => img.id === 'demo-analytics')?.imageUrl || ''
+  
+  // Find the specific analytics image from the centralized placeholder list
+  const analyticsItem = PlaceHolderImages.find(img => img.id === 'demo-analytics')
+  const analyticsImage = analyticsItem?.imageUrl || 'https://placehold.co/600x400?text=Analytics+Overview'
 
   const handleStart = () => {
     localStorage.setItem('native_intro_seen', 'true')
@@ -68,13 +71,16 @@ export default function IntroPage() {
             Demo Analytics Overview
           </h2>
           <Card className="border-none shadow-sm bg-white overflow-hidden p-0 relative aspect-[4/3] w-full">
-            <Image 
-              src={analyticsImage} 
-              alt="Demo Analytics Overview" 
-              fill 
-              className="object-contain p-2"
-              data-ai-hint="data analysis"
-            />
+            {analyticsImage && (
+              <Image 
+                src={analyticsImage} 
+                alt="Demo Analytics Overview" 
+                fill 
+                className="object-contain p-2"
+                data-ai-hint="data analysis"
+                unoptimized // Use unoptimized if external hosting has strict referer policies
+              />
+            )}
           </Card>
           <p className="text-[10px] text-center text-muted-foreground font-medium italic">
             Visualizing proficiency trends and skill-specific accuracy.
