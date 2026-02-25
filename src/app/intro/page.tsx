@@ -1,29 +1,16 @@
-
 "use client"
 
-import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import Image from 'next/image'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Bar, BarChart } from 'recharts'
-import { Mic, PenTool, BookOpen, Headphones, ArrowRight, CheckCircle2, Info } from 'lucide-react'
-
-const demoTrendData = [
-  { week: 'W1', speaking: 4.5, writing: 4.0 },
-  { week: 'W2', speaking: 5.0, writing: 4.5 },
-  { week: 'W3', speaking: 5.5, writing: 5.0 },
-  { week: 'W4', speaking: 6.0, writing: 5.8 },
-]
-
-const demoAccuracyData = [
-  { subject: 'Reading', value: 85 },
-  { subject: 'Listening', value: 72 },
-]
+import { Mic, PenTool, BookOpen, ArrowRight, CheckCircle2, Info } from 'lucide-react'
+import { PlaceHolderImages } from '@/lib/placeholder-images'
 
 export default function IntroPage() {
   const router = useRouter()
+  const analyticsImage = PlaceHolderImages.find(img => img.id === 'demo-analytics')?.imageUrl || ''
 
   const handleStart = () => {
     localStorage.setItem('native_intro_seen', 'true')
@@ -80,45 +67,18 @@ export default function IntroPage() {
             <Info className="w-5 h-5 text-blue-500" />
             Demo Analytics Overview
           </h2>
-          <Card className="border-none shadow-sm bg-white overflow-hidden">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Skill Band Trends (Mock)</CardTitle>
-            </CardHeader>
-            <CardContent className="h-48 pt-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={demoTrendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.3} />
-                  <XAxis dataKey="week" hide />
-                  <YAxis domain={[0, 9]} hide />
-                  <Line type="monotone" dataKey="speaking" stroke="hsl(var(--primary))" strokeWidth={3} dot={false} />
-                  <Line type="monotone" dataKey="writing" stroke="hsl(var(--accent))" strokeWidth={3} dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-              <div className="flex justify-center gap-4 text-[10px] font-bold mt-2">
-                <div className="flex items-center gap-1"><div className="w-2 h-2 bg-primary rounded-full"/> Speaking</div>
-                <div className="flex items-center gap-1"><div className="w-2 h-2 bg-accent rounded-full"/> Writing</div>
-              </div>
-            </CardContent>
+          <Card className="border-none shadow-sm bg-white overflow-hidden p-0 relative aspect-[4/3] w-full">
+            <Image 
+              src={analyticsImage} 
+              alt="Demo Analytics Overview" 
+              fill 
+              className="object-contain p-2"
+              data-ai-hint="data analysis"
+            />
           </Card>
-          
-          <Card className="border-none shadow-sm bg-white overflow-hidden">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs font-bold uppercase text-muted-foreground tracking-wider">Accuracy (%)</CardTitle>
-            </CardHeader>
-            <CardContent className="h-24 pt-0">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={demoAccuracyData} layout="vertical" margin={{ left: -40 }}>
-                  <XAxis type="number" hide domain={[0, 100]} />
-                  <YAxis type="category" dataKey="subject" hide />
-                  <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} barSize={12} />
-                </BarChart>
-              </ResponsiveContainer>
-              <div className="flex justify-between text-[10px] font-bold text-muted-foreground">
-                <span>Reading: 85%</span>
-                <span>Listening: 72%</span>
-              </div>
-            </CardContent>
-          </Card>
+          <p className="text-[10px] text-center text-muted-foreground font-medium italic">
+            Visualizing proficiency trends and skill-specific accuracy.
+          </p>
         </div>
       </div>
 
