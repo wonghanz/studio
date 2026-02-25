@@ -2,6 +2,9 @@
 'use server';
 /**
  * @fileOverview A Genkit flow for evaluating mystery case writing missions.
+ * 
+ * This flow acts as a 'Senior Detective' examiner, grading student reports
+ * based on both investigation accuracy and exam-level English rubrics.
  */
 
 import { ai } from '@/ai/genkit';
@@ -17,11 +20,11 @@ const AiMysteryEvaluationInputSchema = z.object({
 export type AiMysteryEvaluationInput = z.infer<typeof AiMysteryEvaluationInputSchema>;
 
 const AiMysteryEvaluationOutputSchema = z.object({
-  bandScore: z.string().describe('Estimated grade or band score.'),
-  feedback: z.string().describe('Detailed feedback on the writing.'),
-  improvementHints: z.array(z.string()).describe('Specific things to fix or improve.'),
-  modelAnswer: z.string().describe('A high-quality version of how the report should look.'),
-  unlockNextClue: z.boolean().describe('Whether the quality is high enough to progress.'),
+  bandScore: z.string().describe('Estimated grade or band score based on official rubrics.'),
+  feedback: z.string().describe('Detailed feedback written in the persona of a Senior Detective mentor.'),
+  improvementHints: z.array(z.string()).describe('Specific linguistic or investigative corrections.'),
+  modelAnswer: z.string().describe('A high-quality version of how the professional investigative report should look.'),
+  unlockNextClue: z.boolean().describe('Whether the quality is high enough to progress the investigation.'),
 });
 export type AiMysteryEvaluationOutput = z.infer<typeof AiMysteryEvaluationOutputSchema>;
 
@@ -33,20 +36,32 @@ const aiMysteryEvaluationPrompt = ai.definePrompt({
   name: 'aiMysteryEvaluationPrompt',
   input: { schema: AiMysteryEvaluationInputSchema },
   output: { schema: AiMysteryEvaluationOutputSchema },
-  prompt: `You are an expert English Language Examiner and a Crime Consultant. 
-  The student is participating in a detective roleplay game to improve their English for the {{{examType}}} exam.
+  prompt: `You are the Lead Investigator and Senior English Examiner for the Royal Language Academy. 
+  You are training a new recruit who is preparing for their {{{examType}}} English exam through investigative roleplay.
   
-  Mission Type: {{{missionType}}}
-  User's Response:
+  The recruit has submitted a report for Case: {{{caseId}}}, Mission Category: {{{missionType}}}.
+  
+  Recruit's Submission:
+  """
   {{{userText}}}
+  """
   
-  Evaluate the response based on:
-  1. Task Achievement: Did they provide the necessary investigative details?
-  2. Language Quality: Is the tone appropriate (formal for reports, accurate for descriptions)?
-  3. Vocabulary: Use of relevant crime/scene vocabulary.
+  Your Directive:
+  Evaluate this report with the cold, precise eye of a crime consultant and the pedagogical rigor of a {{{examType}}} examiner.
   
-  If the response is at least a passing grade for a {{{examType}}} student, set unlockNextClue to true.
-  Provide actionable improvement hints and a model answer.`,
+  Assessment Criteria:
+  1. Investigative Precision: Did they document the scene or testimony with enough detail to advance the case?
+  2. Forensic Register: Did they use formal, professional English suitable for a police file? (e.g., using "observed" instead of "saw", "incident" instead of "thing").
+  3. Linguistic Integrity: Check for grammar, sentence structure, and vocabulary richness appropriate for a {{{examType}}} candidate.
+  
+  Scoring:
+  - Provide a 'bandScore' aligned with {{{examType}}} standards.
+  - If the report is equivalent to a passing grade or better, set 'unlockNextClue' to true.
+  
+  Feedback Tone:
+  - Write 'feedback' as a senior mentor. Use phrases like "Good work, recruit," or "This report is sloppy, cadet. Tighten up your descriptions."
+  - Provide 'improvementHints' that focus on replacing weak verbs with stronger ones and correcting structural errors.
+  - The 'modelAnswer' should be a masterpiece of investigative writing that would earn an 'A' or 'Band 5+'.`,
 });
 
 const aiMysteryEvaluationFlow = ai.defineFlow(
