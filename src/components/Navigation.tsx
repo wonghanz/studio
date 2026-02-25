@@ -1,10 +1,10 @@
-
 "use client"
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, BookOpen, PenTool, Mic, BarChart, Settings, Camera } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { APP_NAME } from '@/lib/constants'
 
 const navItems = [
   { href: '/dashboard', label: 'Home', icon: Home },
@@ -17,7 +17,7 @@ const navItems = [
 export function BottomNav() {
   const pathname = usePathname()
 
-  if (['/', '/auth', '/onboarding'].includes(pathname)) return null
+  if (['/', '/auth', '/onboarding', '/intro'].includes(pathname)) return null
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border flex justify-around items-center h-16 px-2 md:hidden">
@@ -45,13 +45,13 @@ export function BottomNav() {
 export function Sidebar() {
   const pathname = usePathname()
   
-  if (['/', '/auth', '/onboarding'].includes(pathname)) return null
+  if (['/', '/auth', '/onboarding', '/intro'].includes(pathname)) return null
 
   return (
     <aside className="hidden md:flex flex-col w-64 h-screen fixed left-0 top-0 bg-white border-r border-border p-4 z-50">
       <div className="flex items-center gap-2 mb-8 px-2">
-        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">N</div>
-        <span className="font-bold text-xl text-primary">NATIVE</span>
+        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold">{APP_NAME.charAt(0)}</div>
+        <span className="font-bold text-xl text-primary">{APP_NAME}</span>
       </div>
       
       <div className="flex-1 space-y-2">

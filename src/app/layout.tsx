@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { BottomNav, Sidebar } from '@/components/Navigation';
 import { Toaster } from '@/components/ui/toaster';
+import { APP_NAME, APP_DESCRIPTION } from '@/lib/constants';
 
 export const metadata: Metadata = {
-  title: 'NATIVE - Your AI English Companion',
-  description: 'AI-powered English proficiency preparation for MUET and SPM level English.',
+  title: `${APP_NAME} - Your AI English Companion`,
+  description: APP_DESCRIPTION,
 };
 
 export default function RootLayout({

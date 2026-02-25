@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Mic, PenTool, BookOpen, ArrowRight, CheckCircle2, Info } from 'lucide-react'
 import { PlaceHolderImages } from '@/lib/placeholder-images'
+import { APP_NAME } from '@/lib/constants'
 
 export default function IntroPage() {
   const router = useRouter()
@@ -28,12 +29,12 @@ export default function IntroPage() {
             PROTOTYPE DEMONSTRATION
           </Badge>
         </div>
-        <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-primary">NATIVE</h1>
+        <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-primary">{APP_NAME}</h1>
         <p className="text-sm font-medium text-muted-foreground opacity-70 tracking-widest uppercase">
           National AI for Targeted In-situ Vocabulary & English
         </p>
         <p className="text-lg text-muted-foreground leading-relaxed">
-          NATIVE is an AI-powered English learning app designed to help MUET and SPM candidates improve speaking, writing, reading, and listening skills through examiner-style feedback and daily story-based practice.
+          {APP_NAME} is an AI-powered English learning app designed to help MUET and SPM candidates improve speaking, writing, reading, and listening skills through examiner-style feedback and daily story-based practice.
         </p>
       </section>
 
@@ -78,7 +79,7 @@ export default function IntroPage() {
                 fill 
                 className="object-contain p-2"
                 data-ai-hint="data analysis"
-                unoptimized // Use unoptimized if external hosting has strict referer policies
+                unoptimized
               />
             )}
           </Card>
