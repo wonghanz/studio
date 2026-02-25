@@ -1,8 +1,7 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
-import { onSnapshot, Query, DocumentData, QuerySnapshot } from 'firebase/firestore';
+import { onSnapshot, Query, DocumentData } from 'firebase/firestore';
 import { errorEmitter } from '../error-emitter';
 import { FirestorePermissionError } from '../errors';
 
@@ -25,8 +24,6 @@ export function useCollection(query: Query | null) {
       },
       async (error) => {
         if (error.code === 'permission-denied') {
-          // Note: In a real scenario we'd need more context for the path, 
-          // but hooks often deal with dynamic queries.
           const permissionError = new FirestorePermissionError({
             path: 'collection',
             operation: 'list',
