@@ -102,7 +102,7 @@ export default function WritingPage() {
             <CardContent className="flex-1 p-0">
               <Textarea
                 className="w-full h-full p-6 border-none focus-visible:ring-0 resize-none text-lg leading-relaxed rounded-none"
-                placeholder="Start writing your essay here..."
+                placeholder="Start writing your official report here..."
                 value={essay}
                 onChange={(e) => setEssay(e.target.value)}
               />
@@ -126,13 +126,16 @@ export default function WritingPage() {
         </div>
 
         <div className="space-y-4">
-          <Card className="border-none shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-lg">Prompt</CardTitle>
+          <Card className="border-none shadow-sm border-l-4 border-l-primary bg-primary/5">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Search className="w-5 h-5 text-primary" />
+                Case Assignment
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground italic">
-                "Some people believe that technology has made the world a better place to live, while others disagree. Discuss both views and give your opinion."
+              <p className="text-sm text-muted-foreground italic leading-relaxed">
+                "You are a junior detective investigating a mysterious occurrence at an abandoned library. A locked room was found open, but nothing seems to be missing. Write a formal incident report describing your initial walkthrough and your theory on why someone would break in without stealing anything."
               </p>
             </CardContent>
           </Card>
@@ -141,7 +144,7 @@ export default function WritingPage() {
             <Card className="border-accent shadow-md bg-accent/5 animate-in slide-in-from-right-4">
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="default" className="bg-accent">Evaluation</Badge>
+                  <Badge variant="default" className="bg-accent">Senior Detective Feedback</Badge>
                   <span className="text-2xl font-bold text-accent">{feedback.score}</span>
                 </div>
               </CardHeader>
@@ -149,7 +152,7 @@ export default function WritingPage() {
                 <div>
                   <h4 className="text-sm font-bold flex items-center gap-2 mb-2">
                     <CheckCircle2 className="h-4 w-4 text-accent" />
-                    Strengths
+                    Forensic Strengths
                   </h4>
                   <ul className="text-xs space-y-1">
                     {feedback.strengths.map((s, i) => (
@@ -160,7 +163,7 @@ export default function WritingPage() {
                 <div>
                   <h4 className="text-sm font-bold flex items-center gap-2 mb-2">
                     <AlertCircle className="h-4 w-4 text-red-500" />
-                    Weaknesses
+                    Procedural Weaknesses
                   </h4>
                   <ul className="text-xs space-y-1">
                     {feedback.weaknesses.map((w, i) => (
@@ -169,7 +172,7 @@ export default function WritingPage() {
                   </ul>
                 </div>
                 <div className="pt-2">
-                  <h4 className="text-sm font-bold mb-1">Feedback</h4>
+                  <h4 className="text-sm font-bold mb-1">Official Evaluation</h4>
                   <p className="text-xs leading-relaxed opacity-80">{feedback.feedback}</p>
                 </div>
               </CardContent>
@@ -179,7 +182,7 @@ export default function WritingPage() {
               <div className="w-16 h-16 rounded-full bg-secondary flex items-center justify-center">
                 <PenTool className="w-8 h-8 opacity-20" />
               </div>
-              <p className="text-sm">Submit your essay to see AI evaluation results here.</p>
+              <p className="text-sm">Submit your investigative report to receive evaluation from HQ.</p>
             </div>
           )}
         </div>
