@@ -4,7 +4,8 @@
 import Link from 'next/link'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PenTool, Shield, BookOpen, ChevronRight, Zap, Star } from 'lucide-react'
+import { PenTool, Shield, BookOpen, ChevronRight, Zap, Star, History } from 'lucide-react'
+import { APP_NAME } from '@/lib/constants'
 
 const writingModes = [
   {
@@ -42,9 +43,16 @@ const writingModes = [
 export default function WritingSelectionPage() {
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-8 pb-24">
-      <header className="space-y-1">
-        <h1 className="text-4xl font-black tracking-tight text-primary">Choose Your Mode</h1>
-        <p className="text-muted-foreground font-medium">Pick a style that motivates you to write today.</p>
+      <header className="flex justify-between items-start">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-black tracking-tight text-primary">Choose Your Mode</h1>
+          <p className="text-muted-foreground font-medium">Pick a style that motivates you to write today.</p>
+        </div>
+        <Link href="/progress">
+           <Button variant="outline" className="gap-2">
+             <History className="w-4 h-4" /> Your Charts
+           </Button>
+        </Link>
       </header>
 
       <div className="grid grid-cols-1 gap-6">
@@ -92,3 +100,5 @@ export default function WritingSelectionPage() {
     </div>
   )
 }
+
+import { Button } from '@/components/ui/button'

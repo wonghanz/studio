@@ -8,8 +8,10 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Loader2, Save, Send, CheckCircle2, AlertCircle, PenTool, Search, ChevronLeft } from 'lucide-react'
+import { Loader2, Save, Send, CheckCircle2, AlertCircle, PenTool, Search, ChevronLeft, RefreshCw } from 'lucide-react'
 import { aiWritingFeedback, type AiWritingFeedbackOutput } from '@/ai/flows/ai-writing-feedback'
+import { useUser, useFirestore } from '@/firebase'
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 
 export default function StandardPracticePage() {
   const [essay, setEssay] = useState('')
@@ -18,10 +20,19 @@ export default function StandardPracticePage() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [feedback, setFeedback] = useState<AiWritingFeedbackOutput | null>(null)
   const { toast } = useToast()
+  const { user } = useUser()
+  const db = useFirestore()
 
   useEffect(() => {
-    const draft = localStorage.getItem('native_writing_draft')
-    if (draft) setEssay(draft)
+    const revisionSource = localStorage.getItem('native_revision_source')
+    if (revisionSource) {
+      setEssay(revisionSource)
+      localStorage.removeItem('native_revision_source')
+      toast({ title: "Revision started", description: "Your original draft has been loaded." })
+    } else {
+      const draft = localStorage.getItem('native_writing_draft')
+      if (draft) setEssay(draft)
+    }
   }, [])
 
   const saveDraft = () => {
@@ -48,6 +59,22 @@ export default function StandardPracticePage() {
       const examType = (localStorage.getItem('native_exam_target') as 'MUET' | 'SPM') || 'SPM'
       const result = await aiWritingFeedback({ essayText: essay, examType })
       setFeedback(result)
+      
+      // Save to History if user is logged in
+      if (user && db) {
+        addDoc(collection(db, 'users', user.uid, 'writingHistory'), {
+          userId: user.uid,
+          mode: 'standard',
+          title: 'Standard Practice Essay',
+          userText: essay,
+          bandScore: result.score,
+          feedback: result.feedback,
+          strengths: result.strengths,
+          weaknesses: result.weaknesses,
+          createdAt: new Date().toISOString()
+        })
+      }
+
       toast({ title: "Evaluation complete!", description: "Check your feedback below." })
     } catch (error) {
       toast({
@@ -116,12 +143,12 @@ export default function StandardPracticePage() {
             <CardHeader className="pb-2">
               <CardTitle className="text-lg flex items-center gap-2">
                 <Search className="w-5 h-5 text-blue-500" />
-                Current Assignment
+                Case Assignment
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground italic leading-relaxed">
-                "Modern technology has made our lives easier but also more complex. Discuss the pros and cons of digitalization in education. Provide relevant examples and a conclusion."
+                "An old library in town has been closed for decades, but residents reported strange lights coming from the windows at midnight. Write an essay exploring the mystery of this building and what its reopening would mean for the community."
               </p>
             </CardContent>
           </Card>
@@ -162,6 +189,13 @@ export default function StandardPracticePage() {
                   <p className="text-xs leading-relaxed opacity-80">{feedback.feedback}</p>
                 </div>
               </CardContent>
+              <CardFooter>
+                 <Link href="/progress" className="w-full">
+                   <Button variant="outline" size="sm" className="w-full gap-2">
+                      <History className="w-4 h-4" /> View History
+                   </Button>
+                 </Link>
+              </CardFooter>
             </Card>
           ) : (
             <div className="h-full flex flex-col items-center justify-center p-8 text-center text-muted-foreground space-y-4">

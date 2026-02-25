@@ -1,8 +1,9 @@
+
 "use client"
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, BookOpen, PenTool, Mic, BarChart, Settings, Camera } from 'lucide-react'
+import { Home, BookOpen, PenTool, Mic, BarChart, Settings, Camera, History } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { APP_NAME } from '@/lib/constants'
 

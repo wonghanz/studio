@@ -8,9 +8,11 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
-import { ChevronLeft, Loader2, Send, ShieldCheck, AlertCircle, Info, Sparkles } from 'lucide-react'
+import { ChevronLeft, Loader2, Send, ShieldCheck, AlertCircle, Info, Sparkles, History } from 'lucide-react'
 import { aiMysteryEvaluation, type AiMysteryEvaluationOutput } from '@/ai/flows/ai-mystery-evaluation'
 import { useToast } from '@/hooks/use-toast'
+import { useUser, useFirestore } from '@/firebase'
+import { collection, addDoc } from 'firebase/firestore'
 
 const missionData = {
   'm1': { title: 'Crime Scene Description', scenario: 'You stand at the edge of the night market. The ground is wet. There are scattered stalls and blue paint chips on the curb. Describe what you see in at least 100 words using formal descriptive language.', objectives: ['Mention the curb', 'Describe the weather', 'Use at least 3 adjectives'], type: 'Description' },
@@ -21,6 +23,8 @@ export default function MissionWritingPage() {
   const params = useParams()
   const router = useRouter()
   const { toast } = useToast()
+  const { user } = useUser()
+  const db = useFirestore()
   
   const caseId = params.caseId as string
   const missionId = params.missionId as string
@@ -29,6 +33,14 @@ export default function MissionWritingPage() {
   const [text, setText] = useState('')
   const [isEvaluating, setIsEvaluating] = useState(false)
   const [result, setResult] = useState<AiMysteryEvaluationOutput | null>(null)
+
+  useEffect(() => {
+    const revisionSource = localStorage.getItem('native_revision_source')
+    if (revisionSource) {
+      setText(revisionSource)
+      localStorage.removeItem('native_revision_source')
+    }
+  }, [])
 
   const handleSubmit = async () => {
     setIsEvaluating(true)
@@ -43,11 +55,26 @@ export default function MissionWritingPage() {
       })
       setResult(response)
       
+      // Save to History
+      if (user && db) {
+        addDoc(collection(db, 'users', user.uid, 'writingHistory'), {
+          userId: user.uid,
+          mode: 'mystery',
+          contentId: caseId,
+          level: missionId,
+          title: `Case: ${caseId} - ${mission.title}`,
+          userText: text,
+          bandScore: response.bandScore,
+          feedback: response.feedback,
+          improvementHints: response.improvementHints,
+          modelAnswer: response.modelAnswer,
+          createdAt: new Date().toISOString()
+        })
+      }
+
       if (response.unlockNextClue) {
-        // Save progress
         const saved = localStorage.getItem(`native_mystery_progress_${caseId}`)
         let unlocked = saved ? JSON.parse(saved) : ['m1']
-        // Unlock next mission logically (m1 -> m2)
         const nextId = `m${parseInt(missionId.substring(1)) + 1}`
         if (!unlocked.includes(nextId)) unlocked.push(nextId)
         localStorage.setItem(`native_mystery_progress_${caseId}`, JSON.stringify(unlocked))
@@ -79,7 +106,7 @@ export default function MissionWritingPage() {
              <CardHeader className="bg-zinc-900 text-white py-3">
                <div className="flex justify-between items-center">
                  <span className="text-xs font-bold uppercase">Detective Report</span>
-                 <Badge variant="outline" className="text-[8px] border-zinc-700 text-zinc-400">Offline Safe</Badge>
+                 <Badge variant="outline" className="text-[8px] border-zinc-700 text-zinc-400">Archived via Firestore</Badge>
                </div>
              </CardHeader>
              <CardContent className="flex-1 p-0">
@@ -123,9 +150,7 @@ export default function MissionWritingPage() {
              <CardContent className="space-y-2">
                 {mission.objectives.map((obj, i) => (
                   <div key={i} className="flex items-center gap-2 text-[10px] font-medium p-1 border-b last:border-0">
-                    <div className="w-3 h-3 rounded-sm border border-accent/30 flex items-center justify-center">
-                       {/* Mock completion check could go here */}
-                    </div>
+                    <div className="w-3 h-3 rounded-sm border border-accent/30 flex items-center justify-center" />
                     {obj}
                   </div>
                 ))}
@@ -156,11 +181,16 @@ export default function MissionWritingPage() {
                   </div>
                 )}
 
-                {result.unlockNextClue && (
-                   <Button variant="outline" size="sm" className="w-full text-[10px] h-8" onClick={() => router.push(`/writing/mystery/${caseId}`)}>
-                      Return to Case Board
-                   </Button>
-                )}
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="flex-1 text-[10px] h-8 gap-1" onClick={() => router.push(`/progress`)}>
+                      <History className="w-3 h-3" /> History
+                  </Button>
+                  {result.unlockNextClue && (
+                    <Button variant="outline" size="sm" className="flex-1 text-[10px] h-8" onClick={() => router.push(`/writing/mystery/${caseId}`)}>
+                        Case Board
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           )}

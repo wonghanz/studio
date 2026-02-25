@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { BookOpen, PenTool, Mic, Headphones, BarChart, Calendar, ArrowRight, Star, Camera, Zap } from 'lucide-react'
+import { BookOpen, PenTool, Mic, BarChart, Calendar, ArrowRight, Star, Camera, Zap, History } from 'lucide-react'
 
 export default function Dashboard() {
   const [userName, setUserName] = useState('Scholar')
@@ -81,6 +81,19 @@ export default function Dashboard() {
             </Link>
           )
         })}
+
+        {/* Your Charts Card */}
+        <Card className="hover:shadow-md transition-all active:scale-95 cursor-pointer border-none shadow-sm group bg-white">
+          <Link href="/progress">
+            <CardContent className="pt-6">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                <History className="w-6 h-6 text-blue-600 group-hover:text-white" />
+              </div>
+              <h3 className="font-semibold text-lg">Your Charts</h3>
+              <p className="text-sm text-muted-foreground">Review writing history & feedback</p>
+            </CardContent>
+          </Link>
+        </Card>
 
         {/* Progress Card */}
         <Card className="hover:shadow-md transition-all active:scale-95 cursor-pointer border-none shadow-sm group">

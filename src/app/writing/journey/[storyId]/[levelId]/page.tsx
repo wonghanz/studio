@@ -8,9 +8,11 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
-import { ChevronLeft, Loader2, Send, CheckCircle2, Info, Sparkles, BookOpen } from 'lucide-react'
+import { ChevronLeft, Loader2, Send, CheckCircle2, Info, Sparkles, BookOpen, History } from 'lucide-react'
 import { aiJourneyEvaluation, type AiJourneyEvaluationOutput } from '@/ai/flows/ai-journey-evaluation'
 import { useToast } from '@/hooks/use-toast'
+import { useUser, useFirestore } from '@/firebase'
+import { collection, addDoc } from 'firebase/firestore'
 
 const levelData = {
   'l1': { title: 'Setting the Scene', scenario: 'The sun is just rising over the paddy fields of Kedah. You pack your old backpack into the car. Describe the sights, sounds, and smells of this early morning start.', objectives: ['Use sensory details', 'Include at least 2 time-markers', 'Min. 80 words'], type: 'Description' },
@@ -23,6 +25,8 @@ export default function JourneyWritingPage() {
   const params = useParams()
   const router = useRouter()
   const { toast } = useToast()
+  const { user } = useUser()
+  const db = useFirestore()
   
   const storyId = params.storyId as string
   const levelId = params.levelId as string
@@ -34,8 +38,14 @@ export default function JourneyWritingPage() {
   const [isSaving, setIsSaving] = useState(false)
 
   useEffect(() => {
-    const draft = localStorage.getItem(`native_journey_draft_${storyId}_${levelId}`)
-    if (draft) setText(draft)
+    const revisionSource = localStorage.getItem('native_revision_source')
+    if (revisionSource) {
+      setText(revisionSource)
+      localStorage.removeItem('native_revision_source')
+    } else {
+      const draft = localStorage.getItem(`native_journey_draft_${storyId}_${levelId}`)
+      if (draft) setText(draft)
+    }
   }, [storyId, levelId])
 
   const saveDraft = () => {
@@ -59,6 +69,23 @@ export default function JourneyWritingPage() {
         examType
       })
       setResult(response)
+
+      // Save to History
+      if (user && db) {
+        addDoc(collection(db, 'users', user.uid, 'writingHistory'), {
+          userId: user.uid,
+          mode: 'journey',
+          contentId: storyId,
+          level: levelId,
+          title: `Journey: ${storyId} - ${level.title}`,
+          userText: text,
+          bandScore: response.bandScore,
+          feedback: response.feedback,
+          improvementHints: response.improvementHints,
+          modelAnswer: response.modelAnswer,
+          createdAt: new Date().toISOString()
+        })
+      }
       
       if (response.unlockNextLevel) {
         const saved = localStorage.getItem(`native_journey_progress_${storyId}`)
@@ -97,7 +124,7 @@ export default function JourneyWritingPage() {
                  <Button variant="ghost" size="sm" className="h-7 text-[10px]" onClick={saveDraft}>
                    {isSaving ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : "Save Draft"}
                  </Button>
-                 <Badge variant="secondary" className="text-[8px] bg-blue-50 text-blue-600">Syncs Online</Badge>
+                 <Badge variant="secondary" className="text-[8px] bg-blue-50 text-blue-600">Archived</Badge>
                </div>
              </CardHeader>
              <CardContent className="flex-1 p-0">
@@ -161,11 +188,16 @@ export default function JourneyWritingPage() {
               <CardContent className="space-y-4">
                 <p className="text-xs leading-relaxed font-medium">{result.feedback}</p>
                 
-                {result.unlockNextLevel && (
-                   <Button variant="outline" size="sm" className="w-full text-[10px] h-8" onClick={() => router.push(`/writing/journey/${storyId}`)}>
-                      Back to Story Board
-                   </Button>
-                )}
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="flex-1 text-[10px] h-8 gap-1" onClick={() => router.push(`/progress`)}>
+                    <History className="w-3 h-3" /> History
+                  </Button>
+                  {result.unlockNextLevel && (
+                    <Button variant="outline" size="sm" className="flex-1 text-[10px] h-8" onClick={() => router.push(`/writing/journey/${storyId}`)}>
+                        Story Board
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
           )}
