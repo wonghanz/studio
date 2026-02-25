@@ -30,7 +30,6 @@ export default function DiaryPage() {
       const examType = (localStorage.getItem('native_exam_target') as 'SPM' | 'MUET') || 'SPM'
       const result = await aiDiaryGenerator({ examType })
       setDiary(result)
-      // Save for the questions page to use
       localStorage.setItem('last_diary_content', JSON.stringify(result))
     } catch (error) {
       toast({
@@ -92,6 +91,13 @@ export default function DiaryPage() {
   }
 
   const backgroundImage = PlaceHolderImages.find(img => img.imageHint.includes(diary?.category.toLowerCase() || ''))?.imageUrl || PlaceHolderImages[3].imageUrl
+
+  const actions = [
+    { label: 'Quiz', icon: BookOpen, color: 'text-blue-500', bg: 'bg-blue-50', href: '/diary/questions' },
+    { label: 'Podcast', icon: Headphones, color: 'text-purple-500', bg: 'bg-purple-50', onClick: toggleAudio },
+    { label: 'Speak', icon: Mic, color: 'text-primary', bg: 'bg-primary/10', href: '/speaking' },
+    { label: 'Write', icon: PenTool, color: 'text-accent', bg: 'bg-accent/10', href: '/writing' },
+  ]
 
   return (
     <div className="p-6 max-w-3xl mx-auto space-y-8 pb-24">
@@ -169,27 +175,31 @@ export default function DiaryPage() {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t">
-                {[
-                  { label: 'Quiz', icon: BookOpen, color: 'text-blue-500', bg: 'bg-blue-50', href: '/diary/questions' },
-                  { label: 'Podcast', icon: Headphones, color: 'text-purple-500', bg: 'bg-purple-50', onClick: toggleAudio },
-                  { label: 'Speak', icon: Mic, color: 'text-primary', bg: 'bg-primary/10', href: '/speaking' },
-                  { label: 'Write', icon: PenTool, color: 'text-accent', bg: 'bg-accent/10', href: '/writing' },
-                ].map((action) => {
-                  const Comp = action.href ? Link : 'button'
-                  return (
-                    <Comp 
+                {actions.map((action) => (
+                  action.href ? (
+                    <Button 
                       key={action.label} 
-                      href={action.href || '#'} 
-                      onClick={action.onClick}
-                      className="w-full"
+                      variant="ghost" 
+                      className={`w-full h-auto flex-col gap-2 p-4 rounded-2xl ${action.bg} hover:bg-white border-2 border-transparent hover:border-border transition-all`}
+                      asChild
                     >
-                      <Button variant="ghost" className={`w-full h-auto flex-col gap-2 p-4 rounded-2xl ${action.bg} hover:bg-white border-2 border-transparent hover:border-border transition-all`}>
+                      <Link href={action.href}>
                         <action.icon className={`w-6 h-6 ${action.color}`} />
                         <span className="font-semibold">{action.label}</span>
-                      </Button>
-                    </Comp>
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button 
+                      key={action.label} 
+                      variant="ghost" 
+                      onClick={action.onClick}
+                      className={`w-full h-auto flex-col gap-2 p-4 rounded-2xl ${action.bg} hover:bg-white border-2 border-transparent hover:border-border transition-all`}
+                    >
+                      <action.icon className={`w-6 h-6 ${action.color}`} />
+                      <span className="font-semibold">{action.label}</span>
+                    </Button>
                   )
-                })}
+                ))}
               </div>
             </CardContent>
           </Card>

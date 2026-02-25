@@ -1,12 +1,14 @@
+
 "use client"
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Loader2, Save, Send, CheckCircle2, AlertCircle, PenTool } from 'lucide-react'
+import { Loader2, Save, Send, CheckCircle2, AlertCircle, PenTool, Search, Zap, Shield } from 'lucide-react'
 import { aiWritingFeedback, type AiWritingFeedbackOutput } from '@/ai/flows/ai-writing-feedback'
 
 export default function WritingPage() {
@@ -59,11 +61,32 @@ export default function WritingPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6 pb-24">
+    <div className="p-6 max-w-5xl mx-auto space-y-6 pb-24">
       <header className="space-y-1">
         <h1 className="text-3xl font-bold">Writing Practice</h1>
         <p className="text-muted-foreground">Draft your essays offline. Submit for AI feedback online.</p>
       </header>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Link href="/writing/mystery" className="md:col-span-3">
+          <Card className="bg-zinc-900 text-white border-none shadow-xl overflow-hidden relative group cursor-pointer hover:scale-[1.01] transition-transform">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent pointer-events-none" />
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+              <Shield className="w-32 h-32" />
+            </div>
+            <CardContent className="p-8 flex items-center gap-6 relative z-10">
+               <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center shadow-2xl">
+                 <Search className="w-8 h-8 text-white" />
+               </div>
+               <div className="space-y-1">
+                 <Badge className="bg-primary hover:bg-primary/90 text-[8px] uppercase tracking-widest font-bold">New Gamified Mode</Badge>
+                 <h2 className="text-2xl font-black tracking-tight">Mystery Case Files</h2>
+                 <p className="text-sm opacity-60">Solve crimes using your writing skills. Unlock clues through evaluation.</p>
+               </div>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">

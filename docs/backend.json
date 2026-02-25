@@ -1,0 +1,65 @@
+
+{
+  "entities": {
+    "Case": {
+      "title": "Case",
+      "description": "A mystery investigation case.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "difficulty": { "type": "string" },
+        "summary": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title", "difficulty"]
+    },
+    "CaseProgress": {
+      "title": "Case Progress",
+      "description": "User progress for a specific case.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "caseId": { "type": "string" },
+        "unlockedMissions": { "type": "array", "items": { "type": "string" } },
+        "currentMissionId": { "type": "string" },
+        "completionStatus": { "type": "string", "enum": ["in-progress", "completed"] },
+        "detectiveRank": { "type": "string" }
+      }
+    },
+    "CaseAttempt": {
+      "title": "Case Attempt",
+      "description": "A writing attempt for a specific mission.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "caseId": { "type": "string" },
+        "missionId": { "type": "string" },
+        "text": { "type": "string" },
+        "bandScore": { "type": "string" },
+        "feedback": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "unlockNext": { "type": "boolean" }
+      }
+    }
+  },
+  "auth": {
+    "providers": [
+      "google.com"
+    ]
+  },
+  "firestore": {
+    "/cases/{caseId}": {
+      "schema": "Case",
+      "description": "Collection of all available mystery cases."
+    },
+    "/users/{userId}/caseProgress/{caseId}": {
+      "schema": "CaseProgress",
+      "description": "Tracking user progress for mystery cases."
+    },
+    "/users/{userId}/caseAttempts/{attemptId}": {
+      "schema": "CaseAttempt",
+      "description": "Detailed history of writing attempts in mystery mode."
+    }
+  }
+}
