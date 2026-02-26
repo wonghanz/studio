@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview A Genkit flow for evaluating short Daily Writing Quests.
@@ -32,6 +31,14 @@ const aiQuestEvaluationPrompt = ai.definePrompt({
   name: 'aiQuestEvaluationPrompt',
   input: { schema: AiQuestEvaluationInputSchema },
   output: { schema: AiQuestEvaluationOutputSchema },
+  config: {
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+    ],
+  },
   prompt: `You are a supportive English coach for Malaysian students. 
   Evaluate this short "Daily Writing Quest" response.
   
@@ -59,7 +66,15 @@ const aiQuestEvaluationFlow = ai.defineFlow(
     outputSchema: AiQuestEvaluationOutputSchema,
   },
   async (input) => {
-    const { output } = await aiQuestEvaluationPrompt(input);
-    return output!;
+    try {
+      const { output } = await aiQuestEvaluationPrompt(input);
+      if (!output) {
+        throw new Error('AI failed to generate a valid quest evaluation.');
+      }
+      return output;
+    } catch (e: any) {
+      console.error('Quest Evaluation Error:', e);
+      throw e;
+    }
   }
 );

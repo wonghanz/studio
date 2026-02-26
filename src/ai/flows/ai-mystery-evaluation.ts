@@ -16,11 +16,11 @@ const AiMysteryEvaluationInputSchema = z.object({
 export type AiMysteryEvaluationInput = z.infer<typeof AiMysteryEvaluationInputSchema>;
 
 const AiMysteryEvaluationOutputSchema = z.object({
-  bandScore: z.string().describe('Estimated MUET band score (e.g., Band 4, Band 5.1).'),
+  bandScore: z.string().describe('Estimated score (e.g., Band 4, Band 5.1).'),
   feedback: z.string().describe('Detailed feedback written in the persona of a Senior Detective / Chief of Police.'),
   improvementHints: z.array(z.string()).describe('Specific linguistic or investigative corrections.'),
   modelAnswer: z.string().describe('A high-quality version of how the professional investigative report should look.'),
-  unlockNextClue: z.boolean().describe('Whether the quality is high enough to progress (Band 4.0 or above).'),
+  unlockNextClue: z.boolean().describe('Whether the quality is high enough to progress.'),
   detectedIntents: z.array(z.string()).optional().describe('Checklist of required intents found in the text.'),
   toneRating: z.enum(['Formal', 'Semi-Formal', 'Informal']).describe('The analyzed tone of the writing.'),
 });
@@ -34,6 +34,14 @@ const aiMysteryEvaluationPrompt = ai.definePrompt({
   name: 'aiMysteryEvaluationPrompt',
   input: { schema: AiMysteryEvaluationInputSchema },
   output: { schema: AiMysteryEvaluationOutputSchema },
+  config: {
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+    ],
+  },
   prompt: `You are the Lead Investigator and Senior MUET Examiner for the Royal Language Academy. 
   You are training a new recruit who is preparing for their {{{examType}}} English exam through investigative roleplay.
   
@@ -53,11 +61,11 @@ const aiMysteryEvaluationPrompt = ai.definePrompt({
   3. Cohesion & Organization: Check for effective use of discourse markers (Furthermore, Consequently, However).
   
   Scoring:
-  - Provide a 'bandScore' aligned with MUET 2021 standards (Band 1 to 5.1+).
-  - If the report is equivalent to a Band 4.0 or better, set 'unlockNextClue' to true.
+  - Provide a 'bandScore' aligned with standards.
+  - If the report is equivalent to a passing grade, set 'unlockNextClue' to true.
   
   Feedback Tone:
-  - Write 'feedback' as a senior mentor / Chief of Police. Use phrases like "Good work, recruit," or "This report is sloppy, cadet. Tighten up your descriptions."
+  - Write 'feedback' as a senior mentor / Chief of Police. Use phrases like "Good work, recruit," or "This report is sloppy, cadet."
   - Provide 'improvementHints' that focus on replacing weak verbs with stronger ones.
   
   If the mission is Task 1 Email:
@@ -72,10 +80,15 @@ const aiMysteryEvaluationFlow = ai.defineFlow(
     outputSchema: AiMysteryEvaluationOutputSchema,
   },
   async (input) => {
-    const { output } = await aiMysteryEvaluationPrompt(input);
-    if (!output) {
-      throw new Error('AI failed to generate a valid mystery evaluation. Please try again.');
+    try {
+      const { output } = await aiMysteryEvaluationPrompt(input);
+      if (!output) {
+        throw new Error('AI failed to generate a valid mystery evaluation.');
+      }
+      return output;
+    } catch (e: any) {
+      console.error('Mystery Evaluation Error:', e);
+      throw e;
     }
-    return output;
   }
 );

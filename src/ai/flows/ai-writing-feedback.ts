@@ -20,7 +20,7 @@ const AiWritingFeedbackOutputSchema = z.object({
   taskFulfilmentScore: z.number().describe('Score for Task Fulfilment (0-20).'),
   languageOrganisationScore: z.number().describe('Score for Language & Organisation (0-20).'),
   totalScore: z.number().describe('Total score out of 40.'),
-  cefrLevel: z.enum(['A2', 'B1', 'Mid B2', 'High B2', 'C1', 'C1+']).describe('Mapped CEFR level.'),
+  cefrLevel: z.string().describe('Mapped CEFR level (e.g. B1, Mid B2, C1).'),
   feedback: z.string().describe('Detailed overall feedback.'),
   strengths: z.array(z.string()).describe('List of key strengths identified.'),
   weaknesses: z.array(z.string()).describe('List of key weaknesses identified.'),
@@ -37,6 +37,14 @@ const aiWritingFeedbackPrompt = ai.definePrompt({
   name: 'aiWritingFeedbackPrompt',
   input: {schema: AiWritingFeedbackInputSchema},
   output: {schema: AiWritingFeedbackOutputSchema},
+  config: {
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+    ],
+  },
   prompt: `You are an official MUET/SPM English writing examiner.
 
 Evaluate the student's writing using the official marking scheme with TWO components:
@@ -75,10 +83,15 @@ const aiWritingFeedbackFlow = ai.defineFlow(
     outputSchema: AiWritingFeedbackOutputSchema,
   },
   async (input) => {
-    const {output} = await aiWritingFeedbackPrompt(input);
-    if (!output) {
-      throw new Error('AI failed to generate a valid writing evaluation. Please try again.');
+    try {
+      const {output} = await aiWritingFeedbackPrompt(input);
+      if (!output) {
+        throw new Error('AI failed to generate a valid writing evaluation.');
+      }
+      return output;
+    } catch (e: any) {
+      console.error('Genkit Evaluation Error:', e);
+      throw e;
     }
-    return output;
   }
 );
