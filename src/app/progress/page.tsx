@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useMemo } from 'react'
@@ -58,7 +59,7 @@ export default function ProgressPage() {
         <Info className="h-4 w-4 text-blue-600" />
         <AlertTitle className="text-xs font-bold uppercase tracking-tight">System Status: Demo Prototype</AlertTitle>
         <AlertDescription className="text-sm font-medium leading-relaxed opacity-90">
-          Analytics and backend history are synchronized with your Firestore data. Visual charts currently use demonstration trends.
+          This is a demo version for backend progress and system demonstration purposes only. Analytics and historical records are synchronized with your Firestore data.
         </AlertDescription>
       </Alert>
 
@@ -81,8 +82,8 @@ export default function ProgressPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { label: 'Writing Avg', value: writingHistory?.length ? '6.0' : '-', icon: PenTool, color: 'text-accent', bg: 'bg-accent/10' },
-              { label: 'Speaking Avg', value: speakingHistory?.length ? 'Band 5' : '-', icon: Mic, color: 'text-primary', bg: 'bg-primary/10' },
-              { label: 'Recent CEFR', value: writingHistory?.[0]?.cefrLevel || '-', icon: Award, color: 'text-yellow-600', bg: 'bg-yellow-100' },
+              { label: 'Speaking Avg', value: speakingHistory?.length ? (speakingHistory[0]?.cefrLevel || 'Band 5') : '-', icon: Mic, color: 'text-primary', bg: 'bg-primary/10' },
+              { label: 'Recent CEFR', value: writingHistory?.[0]?.cefrLevel || speakingHistory?.[0]?.cefrLevel || '-', icon: Award, color: 'text-yellow-600', bg: 'bg-yellow-100' },
               { label: 'Activities', value: (writingHistory?.length || 0) + (speakingHistory?.length || 0), icon: Zap, color: 'text-blue-600', bg: 'bg-blue-100' },
             ].map((stat) => (
               <Card key={stat.label} className="border-none shadow-sm">

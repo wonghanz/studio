@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useRef } from 'react'
@@ -10,7 +11,7 @@ import { useToast } from '@/hooks/use-toast'
 import { 
   Mic, Square, Loader2, BarChart, Sparkles, Trash2, 
   Star, Zap, ChevronRight, MessageSquare, Play, 
-  RotateCcw, CheckCircle2, Target, Headphones
+  RotateCcw, CheckCircle2, Target, Headphones, UserCheck
 } from 'lucide-react'
 import { aiSpeakingExamination, type AiSpeakingExaminationOutput } from '@/ai/flows/ai-speaking-examination'
 import { useUser, useFirestore } from '@/firebase'
@@ -88,7 +89,7 @@ export default function SpeakingPage() {
             userId: user.uid,
             mode: 'standard',
             topic,
-            audioUrl: audioUrl, // In a real app, upload blob to Storage first
+            audioUrl: audioUrl,
             transcript: result.transcript,
             taskScore: result.taskFulfilmentScore,
             languageScore: result.languageScore,
@@ -116,26 +117,48 @@ export default function SpeakingPage() {
         <p className="text-muted-foreground font-medium">Build confidence through official MUET criteria analysis.</p>
       </header>
 
-      <Link href="/speaking/live">
-        <Card className="bg-primary text-white border-none shadow-xl hover:shadow-2xl transition-all cursor-pointer group relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-            <MessageSquare className="w-32 h-32" />
-          </div>
-          <CardContent className="p-8 space-y-4 relative z-10">
-            <div className="flex items-center gap-2">
-              <Badge className="bg-white text-primary uppercase font-bold text-[10px]">Interactive</Badge>
-              <Sparkles className="w-4 h-4 text-accent fill-accent" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Link href="/speaking/live-examiner">
+          <Card className="bg-zinc-900 text-white border-none shadow-xl hover:shadow-2xl transition-all cursor-pointer group relative overflow-hidden h-full">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+              <UserCheck className="w-32 h-32" />
             </div>
-            <div>
-              <h2 className="text-3xl font-black">Live Speaking Mode</h2>
-              <p className="text-sm opacity-80 mt-1 max-w-md">Roleplay, group discussions, and quick-fire topic spins. Practice real-time conversation with AI.</p>
+            <CardContent className="p-8 space-y-4 relative z-10">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-primary text-white uppercase font-bold text-[10px]">New Feature</Badge>
+                <Sparkles className="w-4 h-4 text-accent fill-accent" />
+              </div>
+              <div>
+                <h2 className="text-3xl font-black text-primary">Live Examiner Mode</h2>
+                <p className="text-sm opacity-80 mt-1 max-w-md italic">"Simulate a real MUET test with dynamic follow-ups."</p>
+              </div>
+              <Button variant="secondary" className="rounded-full px-8 gap-2 group-hover:bg-primary group-hover:text-white transition-colors">
+                Start Test <ChevronRight className="w-4 h-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        </Link>
+
+        <Link href="/speaking/live">
+          <Card className="bg-primary text-white border-none shadow-xl hover:shadow-2xl transition-all cursor-pointer group relative overflow-hidden h-full">
+            <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
+              <MessageSquare className="w-32 h-32" />
             </div>
-            <Button variant="secondary" className="rounded-full px-8 gap-2 group-hover:bg-white transition-colors">
-              Enter Live Mode <ChevronRight className="w-4 h-4" />
-            </Button>
-          </CardContent>
-        </Card>
-      </Link>
+            <CardContent className="p-8 space-y-4 relative z-10">
+              <div className="flex items-center gap-2">
+                <Badge className="bg-white text-primary uppercase font-bold text-[10px]">Casual Practice</Badge>
+              </div>
+              <div>
+                <h2 className="text-3xl font-black">Roleplay & Mini-Games</h2>
+                <p className="text-sm opacity-80 mt-1 max-w-md">Practice real-time conversation in café, interviews, and topic spins.</p>
+              </div>
+              <Button variant="secondary" className="rounded-full px-8 gap-2 group-hover:bg-white transition-colors">
+                Practice Mode <ChevronRight className="w-4 h-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <Card className="border-none shadow-lg bg-white overflow-hidden h-fit">

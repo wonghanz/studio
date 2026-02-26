@@ -14,3 +14,4 @@ import '@/ai/flows/ai-journey-evaluation.ts';
 import '@/ai/flows/ai-quest-evaluation.ts';
 import '@/ai/flows/ai-live-speaking-engine.ts';
 import '@/ai/flows/ai-speaking-spin-evaluation.ts';
+import '@/ai/flows/ai-live-examiner.ts';
