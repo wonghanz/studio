@@ -4,9 +4,10 @@
 This is a demonstration prototype for NATIVE (National AI for Targeted In-situ Vocabulary & English), an AI-powered English proficiency companion.
 
 ## Key Features
+- **Daily Writing Quest**: A habit-building mode with 3 bite-sized tasks daily, streaks (🔥), and badge rewards.
 - **Intro Page**: A new visual overview appearing after onboarding to introduce the app's mission and key features with demo analytics.
-- **Statistics Disclaimer**: A formal declaration banner on the Statistics page clarifying the prototype status of the backend analytics.
-- **AI Examiner**: Feedback for Speaking and Writing using Gemini 2.5.
+- **AI Examiner**: Feedback for Speaking and Writing using Gemini 3.0 Flash.
+- **Mystery Case Files**: Solve fictional crimes by writing investigative reports with a specialized "Tone Siren" register check.
 - **AR Scene Guide**: Visual analysis of real-world scenarios for vocabulary building.
 
 ## Demo Status
@@ -14,7 +15,7 @@ Please note that all analytics and band scores in the current version are for de
 
 ## Tech Stack
 - NextJS 15 (App Router)
-- Firebase SDK
-- Genkit (Google Gemini)
+- Firebase SDK (Firestore, Auth)
+- Genkit (Gemini 3.0 Flash)
 - Recharts (Mock Data Visualizations)
 - ShadCN UI

@@ -34,7 +34,7 @@
       "properties": {
         "id": { "type": "string" },
         "userId": { "type": "string" },
-        "mode": { "type": "string", "enum": ["standard", "mystery", "journey"] },
+        "mode": { "type": "string", "enum": ["standard", "mystery", "journey", "quest"] },
         "contentId": { "type": "string" },
         "level": { "type": "string" },
         "title": { "type": "string" },
@@ -48,6 +48,26 @@
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["userId", "mode", "userText", "bandScore", "createdAt"]
+    },
+    "WritingStreak": {
+      "title": "Writing Streak",
+      "description": "Tracking daily writing consistency.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "currentStreak": { "type": "number" },
+        "lastCompletedDate": { "type": "string", "format": "date" }
+      }
+    },
+    "UserBadge": {
+      "title": "User Badge",
+      "description": "Rewards earned by the user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "badgeId": { "type": "string" },
+        "earnedAt": { "type": "string", "format": "date-time" }
+      }
     }
   },
   "auth": {
@@ -66,7 +86,15 @@
     },
     "/users/{userId}/writingHistory/{attemptId}": {
       "schema": "WritingAttempt",
-      "description": "Detailed history of all writing attempts including mystery, journey, and standard."
+      "description": "Detailed history of all writing attempts."
+    },
+    "/users/{userId}/writingStreaks/main": {
+      "schema": "WritingStreak",
+      "description": "User's current writing streak data."
+    },
+    "/users/{userId}/writingBadges/{badgeId}": {
+      "schema": "UserBadge",
+      "description": "Badges earned by the user."
     }
   }
 }

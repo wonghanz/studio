@@ -11,3 +11,4 @@ import '@/ai/flows/ai-diary-generator.ts';
 import '@/ai/flows/ai-scenario-analysis.ts';
 import '@/ai/flows/ai-mystery-evaluation.ts';
 import '@/ai/flows/ai-journey-evaluation.ts';
+import '@/ai/flows/ai-quest-evaluation.ts';
