@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview A multi-purpose live speaking engine for Roleplay and Group Discussions.
@@ -22,7 +21,7 @@ export type LiveSpeakingInput = z.infer<typeof LiveSpeakingInputSchema>;
 
 const LiveSpeakingOutputSchema = z.object({
   aiReply: z.string().describe("The text response from the AI teammate or character."),
-  aiSpeakerName: z.string().optional().describe("Name of the teammate speaking (for group mode)."),
+  aiSpeakerName: z.string().optional().describe("Name of the teammate speaking."),
   isSessionFinished: z.boolean().describe("Whether the conversation has reached a natural conclusion."),
   evaluation: z.object({
     bandScore: z.string().optional(),
@@ -36,10 +35,10 @@ export type LiveSpeakingOutput = z.infer<typeof LiveSpeakingOutputSchema>;
 
 const liveSpeakingPrompt = ai.definePrompt({
   name: 'liveSpeakingPrompt',
-  model: 'googleai/gemini-3.1-pro',
+  model: 'googleai/gemini-1.5-pro',
   input: { schema: LiveSpeakingInputSchema },
   output: { schema: LiveSpeakingOutputSchema },
-  prompt: `You are an AI assistant facilitating a Live Speaking practice session for a student preparing for {{{examType}}}.
+  prompt: `You are an AI assistant facilitating a Live Speaking session for a student preparing for {{{examType}}}.
 
 MODE: {{{mode}}}
 SCENARIO: {{{scenario}}}
@@ -52,14 +51,11 @@ HISTORY:
 LATEST USER AUDIO: {{#if userAudioDataUri}}{{media url=userAudioDataUri}}{{else}}None{{/if}}
 
 INSTRUCTIONS:
-1. If this is a 'roleplay', act as the character described in the scenario.
-2. If this is a 'group' discussion, act as two distinct AI teammates: 'Ahmad' (interrupter/proactive) and 'Sara' (quiet/reflective). Switch between them naturally.
-3. Keep the conversation flowing naturally.
-4. If the session has lasted enough turns (typically 5+ user inputs), or if the user says goodbye, set 'isSessionFinished' to true and provide an 'evaluation'.
-5. Evaluation must include a band score (SPM A-G or MUET Band 1-6) and specific feedback on fluency, pronunciation (based on the latest audio), and coherence.
-6. Provide 'betterResponses' to show how a high-level candidate would have responded.
+1. Roleplay: Act as the character in the scenario.
+2. Group: Act as 'Ahmad' or 'Sara' AI teammates.
+3. If TurnCount > 5 or user says goodbye, set 'isSessionFinished' to true and evaluate.
 
-Generate your reply as JSON.`,
+Generate JSON response.`,
 });
 
 export async function aiLiveSpeakingEngine(input: LiveSpeakingInput): Promise<LiveSpeakingOutput> {
