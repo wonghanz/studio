@@ -51,12 +51,13 @@
     },
     "WritingStreak": {
       "title": "Writing Streak",
-      "description": "Tracking daily writing consistency.",
+      "description": "Tracking global writing consistency across all modes.",
       "type": "object",
       "properties": {
         "userId": { "type": "string" },
         "currentStreak": { "type": "number" },
-        "lastCompletedDate": { "type": "string", "format": "date" }
+        "longestStreak": { "type": "number" },
+        "lastActivityDate": { "type": "string", "format": "date" }
       }
     },
     "UserBadge": {
@@ -90,7 +91,7 @@
     },
     "/users/{userId}/writingStreaks/main": {
       "schema": "WritingStreak",
-      "description": "User's current writing streak data."
+      "description": "User's global unified writing streak data."
     },
     "/users/{userId}/writingBadges/{badgeId}": {
       "schema": "UserBadge",

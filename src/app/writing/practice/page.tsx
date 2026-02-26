@@ -12,6 +12,7 @@ import { Loader2, Save, Send, CheckCircle2, AlertCircle, PenTool, Search, Chevro
 import { aiWritingFeedback, type AiWritingFeedbackOutput } from '@/ai/flows/ai-writing-feedback'
 import { useUser, useFirestore } from '@/firebase'
 import { collection, addDoc } from 'firebase/firestore'
+import { updateGlobalWritingStreak } from '@/lib/streak-service'
 
 export default function StandardPracticePage() {
   const [essay, setEssay] = useState('')
@@ -61,6 +62,7 @@ export default function StandardPracticePage() {
       setFeedback(result)
       
       if (user && db) {
+        // 1. Record History
         addDoc(collection(db, 'users', user.uid, 'writingHistory'), {
           userId: user.uid,
           mode: 'standard',
@@ -72,9 +74,12 @@ export default function StandardPracticePage() {
           weaknesses: result.weaknesses,
           createdAt: new Date().toISOString()
         })
+
+        // 2. Update Unified Global Streak
+        updateGlobalWritingStreak(db, user.uid);
       }
 
-      toast({ title: "Evaluation complete!", description: "Check your feedback below." })
+      toast({ title: "Evaluation complete!", description: "Streak maintained. Check your feedback." })
     } catch (error) {
       toast({
         title: "Evaluation failed",

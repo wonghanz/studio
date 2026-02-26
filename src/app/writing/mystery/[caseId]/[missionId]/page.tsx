@@ -1,6 +1,7 @@
+
 "use client"
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
@@ -9,15 +10,15 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Progress } from '@/components/ui/progress'
 import { 
-  ChevronLeft, Loader2, Send, ShieldCheck, AlertCircle, Info, 
-  Sparkles, History, CheckCircle2, Siren, Zap, Search, ClipboardList,
-  ArrowRight
+  ChevronLeft, Loader2, Send, CheckCircle2, Siren, Zap, Search, ClipboardList,
+  ArrowRight, Info, History
 } from 'lucide-react'
 import { aiMysteryEvaluation, type AiMysteryEvaluationOutput } from '@/ai/flows/ai-mystery-evaluation'
 import { useToast } from '@/hooks/use-toast'
 import { useUser, useFirestore } from '@/firebase'
 import { collection, addDoc } from 'firebase/firestore'
 import { cn } from '@/lib/utils'
+import { updateGlobalWritingStreak } from '@/lib/streak-service'
 
 const missionData = {
   'm1': { 
@@ -83,7 +84,6 @@ export default function MissionWritingPage() {
   const [checklist, setChecklist] = useState(mission.objectives)
   const [toneAlert, setToneAlert] = useState<{message: string, suggestion: string} | null>(null)
 
-  // Simulated Intent Recognition (Basic Keyword/Pattern matching for real-time feel)
   useEffect(() => {
     const textLower = text.toLowerCase();
     
@@ -103,7 +103,6 @@ export default function MissionWritingPage() {
       setChecklist(newChecklist);
     }
 
-    // Tone Siren Simulation (Basic Slang Detection)
     const slang = ['bro', 'thanks', 'late', 'thing', 'stuff', 'wanna', 'gonna'];
     const foundSlang = slang.find(s => textLower.includes(s));
     
@@ -131,6 +130,7 @@ export default function MissionWritingPage() {
       setResult(response);
       
       if (user && db) {
+        // 1. Record History
         addDoc(collection(db, 'users', user.uid, 'writingHistory'), {
           userId: user.uid,
           mode: 'mystery',
@@ -144,6 +144,9 @@ export default function MissionWritingPage() {
           modelAnswer: response.modelAnswer,
           createdAt: new Date().toISOString()
         });
+
+        // 2. Update Unified Global Streak
+        updateGlobalWritingStreak(db, user.uid);
       }
 
       if (response.unlockNextClue) {
@@ -152,7 +155,7 @@ export default function MissionWritingPage() {
         const nextId = `m${parseInt(missionId.substring(1)) + 1}`;
         if (!unlocked.includes(nextId)) unlocked.push(nextId);
         localStorage.setItem(`native_mystery_progress_${caseId}`, JSON.stringify(unlocked));
-        toast({ title: "Case Updated!", description: "High-quality intelligence gathered." });
+        toast({ title: "Case Updated!", description: "Streak maintained. Intelligence gathered." });
       }
     } catch (error) {
       toast({ title: "Evaluation failed", variant: "destructive" });

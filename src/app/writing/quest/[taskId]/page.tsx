@@ -1,18 +1,19 @@
 
 "use client"
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
-import { ChevronLeft, Send, Loader2, Sparkles, CheckCircle2, AlertCircle, History, Info, Save } from 'lucide-react'
+import { ChevronLeft, Send, Loader2, CheckCircle2, Info, Save } from 'lucide-react'
 import { aiQuestEvaluation, type AiQuestEvaluationOutput } from '@/ai/flows/ai-quest-evaluation'
 import { useToast } from '@/hooks/use-toast'
 import { useUser, useFirestore } from '@/firebase'
-import { collection, addDoc, doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc } from 'firebase/firestore'
+import { updateGlobalWritingStreak } from '@/lib/streak-service'
 
 const QUEST_DATA = {
   'q1': { title: 'Quick Reaction', prompt: 'Describe your favorite Malaysian food in 3 sentences.', target: '30-50 words' },
@@ -62,16 +63,15 @@ export default function QuestTaskPage() {
       setResult(response)
 
       if (response.isCompleted) {
-        // Track locally
+        // Track locally for today's quest list UI
         const today = new Date().toISOString().split('T')[0]
         const saved = localStorage.getItem(`native_quest_completed_${today}`)
         let completed = saved ? JSON.parse(saved) : []
         if (!completed.includes(taskId)) completed.push(taskId)
         localStorage.setItem(`native_quest_completed_${today}`, JSON.stringify(completed))
 
-        // Update Streak & History in Firestore
         if (user && db) {
-          // 1. History
+          // 1. Record History
           addDoc(collection(db, 'users', user.uid, 'writingHistory'), {
             userId: user.uid,
             mode: 'quest',
@@ -84,36 +84,11 @@ export default function QuestTaskPage() {
             createdAt: new Date().toISOString()
           })
 
-          // 2. Streak Check (Simple version)
-          const streakRef = doc(db, 'users', user.uid, 'writingStreaks', 'main')
-          const streakSnap = await getDoc(streakRef)
-          
-          if (completed.length === 3) {
-            // Full quest completed today
-            if (streakSnap.exists()) {
-              const data = streakSnap.data()
-              const lastDate = data.lastCompletedDate
-              const yesterday = new Date()
-              yesterday.setDate(yesterday.getDate() - 1)
-              const yesterdayStr = yesterday.toISOString().split('T')[0]
-
-              if (lastDate !== today) {
-                const newStreak = lastDate === yesterdayStr ? (data.currentStreak + 1) : 1
-                setDoc(streakRef, {
-                  currentStreak: newStreak,
-                  lastCompletedDate: today
-                }, { merge: true })
-              }
-            } else {
-              setDoc(streakRef, {
-                currentStreak: 1,
-                lastCompletedDate: today
-              })
-            }
-          }
+          // 2. Update Unified Global Streak
+          updateGlobalWritingStreak(db, user.uid);
         }
         
-        toast({ title: "Quest Task Completed!", description: "Keep it up!" })
+        toast({ title: "Quest Task Completed!", description: "Keep your streak alive!" })
       }
     } catch (error) {
       toast({ title: "Evaluation failed", variant: "destructive" })

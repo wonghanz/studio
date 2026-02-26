@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { BookOpen, PenTool, Mic, BarChart, Calendar, ArrowRight, Star, Camera, Zap, Flame, Award } from 'lucide-react'
+import { BookOpen, PenTool, Mic, BarChart, Calendar, ArrowRight, Star, Camera, Zap, Flame, Award, TrendingUp } from 'lucide-react'
 import { useUser, useFirestore, useDoc } from '@/firebase'
 
 export default function Dashboard() {
@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [examTarget, setExamTarget] = useState('SPM')
   const [questProgress, setQuestProgress] = useState(0)
 
-  // Fetch Streak
+  // Fetch Global Unified Streak
   const streakRef = useMemo(() => user?.uid ? `/users/${user.uid}/writingStreaks/main` : null, [user])
   const { data: streakData } = useDoc(streakRef)
 
@@ -34,12 +34,14 @@ export default function Dashboard() {
   }, [])
 
   const mainActions = [
-    { title: 'Writing Quest', desc: 'Daily mini-tasks', icon: Award, color: 'text-orange-500', bg: 'bg-orange-50', href: '/writing/quest', featured: true, streak: streakData?.currentStreak || 0 },
+    { title: 'Writing Quest', desc: 'Daily mini-tasks', icon: Award, color: 'text-orange-500', bg: 'bg-orange-50', href: '/writing/quest', featured: true },
     { title: 'Scene Guide', desc: 'Analyze real scenarios', icon: Camera, color: 'text-red-500', bg: 'bg-red-50', href: '/ar-mode' },
     { title: 'Daily Diary', desc: 'Today\'s pick', icon: Star, color: 'text-yellow-500', bg: 'bg-yellow-50', href: '/diary' },
     { title: 'Speaking', desc: 'Mock examination', icon: Mic, color: 'text-primary', bg: 'bg-primary/10', href: '/speaking' },
     { title: 'Writing', desc: 'Essay practice', icon: PenTool, color: 'text-accent', bg: 'bg-accent/10', href: '/writing' },
   ]
+
+  const hasWrittenToday = streakData?.lastActivityDate === new Date().toISOString().split('T')[0];
 
   return (
     <div className="p-6 pb-24 md:pb-6 max-w-5xl mx-auto space-y-8 animate-in fade-in duration-700">
@@ -50,17 +52,41 @@ export default function Dashboard() {
         </div>
         <div className="flex gap-2">
           {streakData?.currentStreak > 0 && (
-            <Badge variant="outline" className="px-3 py-1 bg-orange-50 text-orange-600 border-orange-200 flex gap-1 items-center">
-              <Flame className="w-3 h-3 fill-orange-500" /> {streakData.currentStreak} Day Streak
-            </Badge>
+            <div className="flex flex-col items-end">
+              <Badge variant="outline" className="px-3 py-1 bg-orange-50 text-orange-600 border-orange-200 flex gap-1 items-center font-bold">
+                <Flame className="w-3 h-3 fill-orange-500" /> {streakData.currentStreak} Day Streak
+              </Badge>
+              {streakData.longestStreak > streakData.currentStreak && (
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest mt-1">Record: {streakData.longestStreak}</span>
+              )}
+            </div>
           )}
           <Link href="/settings">
-            <Badge variant="secondary" className="px-3 py-1 cursor-pointer hover:bg-secondary/80">
+            <Badge variant="secondary" className="px-3 py-1 cursor-pointer hover:bg-secondary/80 h-fit">
               Target: {examTarget}
             </Badge>
           </Link>
         </div>
       </header>
+
+      {!hasWrittenToday && (
+        <Card className="bg-orange-50 border-orange-100 shadow-sm animate-in slide-in-from-top-2">
+          <CardContent className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                <Flame className="w-5 h-5 text-orange-500" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-orange-800">Keep your streak alive!</p>
+                <p className="text-xs text-orange-600">Complete any writing activity today to reach { (streakData?.currentStreak || 0) + 1 } days.</p>
+              </div>
+            </div>
+            <Link href="/writing/quest">
+              <Button size="sm" variant="outline" className="border-orange-200 text-orange-700 bg-white hover:bg-orange-50">Quick Quest</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {/* Writing Quest Progress Card */}
@@ -84,39 +110,13 @@ export default function Dashboard() {
            </CardContent>
         </Card>
 
-        {/* Daily Plan Card */}
-        <Card className="col-span-1 bg-primary text-primary-foreground shadow-lg border-none overflow-hidden relative group">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform">
-            <Calendar className="w-32 h-32" />
-          </div>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              Your Daily Plan
-            </CardTitle>
-            <CardDescription className="text-primary-foreground/80">Tasks remaining for today</CardDescription>
-          </CardHeader>
-          <CardContent className="relative z-10">
-            <Link href="/daily-plan">
-              <Button variant="secondary" className="w-full">
-                View My Tasks
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-
         {/* Action Grid */}
         {mainActions.map((action) => {
-          if (action.title === 'Writing Quest' && action.featured) {
-             // Already showing featured as a progress bar above, or skip and show as small card
-          }
+          if (action.title === 'Writing Quest' && action.featured) return null;
           const Icon = action.icon
           return (
-            <Link key={action.title} href={action.href} className={action.featured ? "md:col-span-1" : ""}>
-              <Card className={`hover:shadow-md transition-all active:scale-95 cursor-pointer h-full border-none shadow-sm relative overflow-hidden ${action.featured ? 'border-2 border-orange-100' : ''}`}>
-                {action.featured && (
-                  <div className="absolute top-0 right-0 bg-orange-500 text-white text-[8px] font-bold px-2 py-0.5 rounded-bl-lg">DAILY QUEST</div>
-                )}
+            <Link key={action.title} href={action.href}>
+              <Card className={`hover:shadow-md transition-all active:scale-95 cursor-pointer h-full border-none shadow-sm relative overflow-hidden`}>
                 <CardContent className="pt-6">
                   <div className={`w-12 h-12 rounded-2xl ${action.bg} flex items-center justify-center mb-4`}>
                     <Icon className={`w-6 h-6 ${action.color}`} />
@@ -134,10 +134,10 @@ export default function Dashboard() {
           <Link href="/progress">
             <CardContent className="pt-6">
               <div className="w-12 h-12 rounded-2xl bg-accent/10 flex items-center justify-center mb-4 group-hover:bg-accent group-hover:text-white transition-colors">
-                <BarChart className="w-6 h-6" />
+                <TrendingUp className="w-6 h-6" />
               </div>
-              <h3 className="font-semibold text-lg">My Progress</h3>
-              <p className="text-sm text-muted-foreground">View performance trends</p>
+              <h3 className="font-semibold text-lg">My Performance</h3>
+              <p className="text-sm text-muted-foreground">View trends and history</p>
             </CardContent>
           </Link>
         </Card>
@@ -146,7 +146,7 @@ export default function Dashboard() {
       <section className="space-y-4">
         <h2 className="text-xl font-bold flex items-center gap-2">
           <Zap className="w-5 h-5 text-accent" />
-          Quick Tip
+          Pro Tip
         </h2>
         <Card className="bg-white/50 border-dashed">
           <CardContent className="p-4 flex gap-4 items-start">
@@ -154,7 +154,7 @@ export default function Dashboard() {
                 <Flame className="w-5 h-5 text-accent" />
              </div>
              <p className="text-sm italic text-muted-foreground leading-relaxed">
-              "Consistency beats intensity! Complete your <strong>Daily Writing Quest</strong> every day to lock in your vocabulary and build a strong streak."
+              "Unified Consistency: Any writing activity—be it a <strong>Daily Quest</strong>, a <strong>Mystery Case</strong>, or a <strong>Revision</strong>—counts towards your consistency streak."
             </p>
           </CardContent>
         </Card>

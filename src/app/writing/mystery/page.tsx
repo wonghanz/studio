@@ -1,13 +1,13 @@
 
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { Shield, ChevronLeft, Lock, Search, Zap, Star } from 'lucide-react'
+import { Shield, ChevronLeft, Star, Flame } from 'lucide-react'
+import { useUser, useFirestore, useDoc } from '@/firebase'
 
 const demoCases = [
   {
@@ -37,8 +37,14 @@ const demoCases = [
 ]
 
 export default function MysterySelectionPage() {
+  const { user } = useUser()
+  const db = useFirestore()
   const [userRank, setUserRank] = useState('Rookie')
   const [completedCases, setCompletedCases] = useState<string[]>([])
+
+  // Fetch Unified Streak
+  const streakRef = useMemo(() => user?.uid ? `/users/${user.uid}/writingStreaks/main` : null, [user])
+  const { data: streakData } = useDoc(streakRef)
 
   useEffect(() => {
     const saved = localStorage.getItem('native_mystery_completed')
@@ -47,16 +53,25 @@ export default function MysterySelectionPage() {
 
   return (
     <div className="p-6 max-w-4xl mx-auto space-y-8 pb-24">
-      <header className="flex items-center gap-4">
-        <Link href="/writing">
-          <Button variant="ghost" size="icon">
-            <ChevronLeft className="w-6 h-6" />
-          </Button>
-        </Link>
-        <div>
-          <h1 className="text-3xl font-black tracking-tight text-primary">Mystery Case Files</h1>
-          <p className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest">Solve with Writing</p>
+      <header className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Link href="/writing">
+            <Button variant="ghost" size="icon">
+              <ChevronLeft className="w-6 h-6" />
+            </Button>
+          </Link>
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-primary">Mystery Case Files</h1>
+            <p className="text-muted-foreground font-medium uppercase text-[10px] tracking-widest">Solve through investigative writing</p>
+          </div>
         </div>
+        {streakData?.currentStreak > 0 && (
+          <div className="flex flex-col items-end">
+            <Badge variant="outline" className="gap-1 bg-orange-50 text-orange-600 border-orange-200 font-bold">
+              <Flame className="w-3 h-3 fill-orange-500" /> {streakData.currentStreak} Day Streak
+            </Badge>
+          </div>
+        )}
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

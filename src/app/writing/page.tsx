@@ -48,7 +48,7 @@ export default function WritingSelectionPage() {
   const db = useFirestore()
   const [questProgress, setQuestProgress] = useState(0)
 
-  // Fetch Streak
+  // Fetch Unified Streak
   const streakRef = useMemo(() => user?.uid ? `/users/${user.uid}/writingStreaks/main` : null, [user])
   const { data: streakData } = useDoc(streakRef)
 
@@ -63,16 +63,19 @@ export default function WritingSelectionPage() {
       <header className="flex justify-between items-start">
         <div className="space-y-1">
           <h1 className="text-4xl font-black tracking-tight text-primary">Choose Your Mode</h1>
-          <p className="text-muted-foreground font-medium">Pick a style that motivates you to write today.</p>
+          <p className="text-muted-foreground font-medium">Any mode maintains your consistency streak.</p>
         </div>
         <div className="flex gap-2">
            {streakData?.currentStreak > 0 && (
-             <Badge variant="outline" className="gap-1 bg-orange-50 text-orange-600 border-orange-200">
-               <Flame className="w-3 h-3 fill-orange-500" /> {streakData.currentStreak}
-             </Badge>
+             <div className="flex flex-col items-end">
+               <Badge variant="outline" className="gap-1 bg-orange-50 text-orange-600 border-orange-200 font-bold">
+                 <Flame className="w-3 h-3 fill-orange-500" /> {streakData.currentStreak} Day Streak
+               </Badge>
+               <span className="text-[8px] text-muted-foreground uppercase tracking-widest mt-1">Best: {streakData.longestStreak}</span>
+             </div>
            )}
            <Link href="/progress">
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2 h-fit">
                 <History className="w-4 h-4" /> History
               </Button>
            </Link>
@@ -94,7 +97,7 @@ export default function WritingSelectionPage() {
                     <div className="flex justify-between items-start mb-1">
                       <Badge variant="secondary" className="text-[10px] uppercase font-bold">{mode.tag}</Badge>
                       {isQuest && questProgress === 3 && (
-                        <Badge className="bg-accent text-[8px]">COMPLETE</Badge>
+                        <Badge className="bg-accent text-[8px]">DAILY GOAL REACHED</Badge>
                       )}
                     </div>
                     <h2 className="text-2xl font-bold group-hover:text-primary transition-colors">{mode.title}</h2>
@@ -102,7 +105,7 @@ export default function WritingSelectionPage() {
                     {isQuest && (
                       <div className="mt-4 space-y-1">
                         <div className="flex justify-between text-[10px] font-black uppercase text-zinc-400">
-                          <span>Quest Progress</span>
+                          <span>Today's Task Progress</span>
                           <span>{questProgress}/3</span>
                         </div>
                         <Progress value={(questProgress/3)*100} className="h-1 bg-orange-100" />
@@ -128,10 +131,20 @@ export default function WritingSelectionPage() {
         <div className="relative z-10 space-y-4">
           <div className="flex items-center gap-2 text-primary">
             <Star className="w-5 h-5 fill-primary" />
-            <span className="text-xs font-bold uppercase tracking-widest">Consistency is Key</span>
+            <span className="text-xs font-bold uppercase tracking-widest">Consistency is King</span>
           </div>
-          <h2 className="text-2xl font-bold">Improve Your Proficiency</h2>
-          <p className="text-sm opacity-70 max-w-md">Writing just 3 short quest tasks a day helps you maintain your <strong>{streakData?.currentStreak || 0}-day streak</strong> and unlocks exclusive badges.</p>
+          <h2 className="text-2xl font-bold">Reward Your Dedication</h2>
+          <p className="text-sm opacity-70 max-w-md">Completing <strong>any writing activity</strong> keeps your <strong>{streakData?.currentStreak || 0}-day streak</strong> alive. Choose the mode that fits your mood.</p>
+          <div className="flex gap-4 pt-2">
+            <div className="flex flex-col">
+              <span className="text-xs font-bold text-primary">CURRENT</span>
+              <span className="text-2xl font-black">{streakData?.currentStreak || 0} Days</span>
+            </div>
+            <div className="flex flex-col border-l border-white/20 pl-4">
+              <span className="text-xs font-bold text-zinc-400">BEST RECORD</span>
+              <span className="text-2xl font-black">{streakData?.longestStreak || 0} Days</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>
