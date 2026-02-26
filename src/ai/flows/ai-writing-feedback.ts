@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview An AI agent for providing official MUET/SPM rubric-based feedback on written essays.
@@ -34,7 +33,7 @@ export async function aiWritingFeedback(input: AiWritingFeedbackInput): Promise<
   return aiWritingFeedbackFlow(input);
 }
 
-const prompt = ai.definePrompt({
+const aiWritingFeedbackPrompt = ai.definePrompt({
   name: 'aiWritingFeedbackPrompt',
   input: {schema: AiWritingFeedbackInputSchema},
   output: {schema: AiWritingFeedbackOutputSchema},
@@ -55,10 +54,7 @@ Evaluate based on:
 - Vocabulary
 - Organisation (essay structure and linkers)
 
-Use the following CEFR mapping for the Total Score (out of 40):
-- 17–20 = C1+ (Note: This is the mapping for the component scores, for the TOTAL score 33-40 = C1+, 25-32 = C1, 19-24 = High B2, 13-18 = Mid B2, 7-12 = B1, 0-6 = A2)
-
-Actually, use this precise mapping for the Total Score (0-40):
+Use the following CEFR mapping for the Total Score (0-40):
 - 33–40: C1+
 - 25–32: C1
 - 19–24: High B2
@@ -79,7 +75,10 @@ const aiWritingFeedbackFlow = ai.defineFlow(
     outputSchema: AiWritingFeedbackOutputSchema,
   },
   async (input) => {
-    const {output} = await prompt(input);
-    return output!;
+    const {output} = await aiWritingFeedbackPrompt(input);
+    if (!output) {
+      throw new Error('AI failed to generate a valid writing evaluation. Please try again.');
+    }
+    return output;
   }
 );

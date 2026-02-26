@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview A Genkit flow for evaluating mystery case writing missions based on MUET standards.
@@ -59,7 +58,7 @@ const aiMysteryEvaluationPrompt = ai.definePrompt({
   
   Feedback Tone:
   - Write 'feedback' as a senior mentor / Chief of Police. Use phrases like "Good work, recruit," or "This report is sloppy, cadet. Tighten up your descriptions."
-  - Provide 'improvementHints' that focus on replacing weak verbs with stronger ones (the "Clean Up the File" translation).
+  - Provide 'improvementHints' that focus on replacing weak verbs with stronger ones.
   
   If the mission is Task 1 Email:
   - Check for 'detectedIntents': Acknowledge, Decline, Suggest, Ask.
@@ -74,6 +73,9 @@ const aiMysteryEvaluationFlow = ai.defineFlow(
   },
   async (input) => {
     const { output } = await aiMysteryEvaluationPrompt(input);
-    return output!;
+    if (!output) {
+      throw new Error('AI failed to generate a valid mystery evaluation. Please try again.');
+    }
+    return output;
   }
 );

@@ -1,7 +1,7 @@
 'use client';
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyDehS39QJ3I7nTKCdJ68jqrMxsgw7F6Z5Q",
+  apiKey: "AIzaSyCY4b934dukm565TB3agiwhEkG41tigL5E",
   authDomain: "native-prototype.firebaseapp.com",
   projectId: "native-prototype",
   storageBucket: "native-prototype.firebasestorage.app",
