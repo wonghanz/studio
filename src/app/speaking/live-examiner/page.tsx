@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ChevronLeft, UserCheck, Users, Sparkles, ShieldCheck, Clock, Zap } from 'lucide-react'
+import { ChevronLeft, ChevronRight, UserCheck, Users, Sparkles, ShieldCheck, Clock, Zap } from 'lucide-react'
 
 const examModes = [
   {

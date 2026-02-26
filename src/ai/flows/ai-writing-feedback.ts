@@ -1,10 +1,7 @@
+
 'use server';
 /**
  * @fileOverview An AI agent for providing official MUET/SPM rubric-based feedback on written essays.
- *
- * - aiWritingFeedback - A function that handles the essay evaluation process.
- * - AiWritingFeedbackInput - The input type for the aiWritingFeedback function.
- * - AiWritingFeedbackOutput - The return type for the aiWritingFeedback function.
  */
 
 import {ai} from '@/ai/genkit';
@@ -35,6 +32,7 @@ export async function aiWritingFeedback(input: AiWritingFeedbackInput): Promise<
 
 const aiWritingFeedbackPrompt = ai.definePrompt({
   name: 'aiWritingFeedbackPrompt',
+  model: 'googleai/gemini-3.1-pro',
   input: {schema: AiWritingFeedbackInputSchema},
   output: {schema: AiWritingFeedbackOutputSchema},
   config: {

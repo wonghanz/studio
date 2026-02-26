@@ -1,12 +1,11 @@
 
 'use server';
 /**
- * @fileOverview A Genkit flow for converting text to speech.
+ * @fileOverview A Genkit flow for converting text to speech using Gemini 2.5 Flash TTS.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { googleAI } from '@genkit-ai/google-genai';
 import wav from 'wav';
 
 const AiTtsInputSchema = z.object({
@@ -58,7 +57,7 @@ const aiTtsFlow = ai.defineFlow(
   },
   async (input) => {
     const { media } = await ai.generate({
-      model: googleAI.model('gemini-2.5-flash-preview-tts'),
+      model: 'googleai/gemini-2.5-flash-tts',
       config: {
         responseModalities: ['AUDIO'],
         speechConfig: {
