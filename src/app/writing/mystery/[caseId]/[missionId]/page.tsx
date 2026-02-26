@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
@@ -86,15 +85,16 @@ export default function MissionWritingPage() {
 
   // Simulated Intent Recognition (Basic Keyword/Pattern matching for real-time feel)
   useEffect(() => {
+    const textLower = text.toLowerCase();
+    
     const newChecklist = checklist.map(obj => {
       let isFound = false;
-      const t = text.toLowerCase();
       
       if (missionId === 'm1') {
-        if (obj.id === 'ack') isFound = t.includes('acknowledge') || t.includes('thank') || t.includes('received');
-        if (obj.id === 'dec') isFound = t.includes('unable') || t.includes('cannot') || t.includes('too late') || t.includes('decline');
-        if (obj.id === 'sug') isFound = t.includes('suggest') || t.includes('instead') || t.includes('rather');
-        if (obj.id === 'ask') isFound = t.includes('license') || t.includes('plate') || t.includes('number');
+        if (obj.id === 'ack') isFound = textLower.includes('acknowledge') || textLower.includes('thank') || textLower.includes('received');
+        if (obj.id === 'dec') isFound = textLower.includes('unable') || textLower.includes('cannot') || textLower.includes('too late') || textLower.includes('decline');
+        if (obj.id === 'sug') isFound = textLower.includes('suggest') || textLower.includes('instead') || textLower.includes('rather');
+        if (obj.id === 'ask') isFound = textLower.includes('license') || textLower.includes('plate') || textLower.includes('number');
       }
       return { ...obj, checked: isFound };
     });
@@ -105,11 +105,12 @@ export default function MissionWritingPage() {
 
     // Tone Siren Simulation (Basic Slang Detection)
     const slang = ['bro', 'thanks', 'late', 'thing', 'stuff', 'wanna', 'gonna'];
-    const foundSlang = slang.find(s => t.includes(s));
+    const foundSlang = slang.find(s => textLower.includes(s));
+    
     if (foundSlang && missionId === 'm1') {
       setToneAlert({
         message: "Tone Siren: Slang Detected!",
-        suggestion: `Rookie, 'bro' or 'wanna' won't do for official reports. Try 'Sir' or 'would like to'.`
+        suggestion: `Rookie, '${foundSlang}' won't do for official reports. Try 'Sir' or 'would like to'.`
       });
     } else {
       setToneAlert(null);
