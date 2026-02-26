@@ -1,11 +1,10 @@
-
 'use server';
 /**
  * @fileOverview A Genkit flow for evaluating levels in the Gamified Writing Journey.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'zod';
+import { z } from 'genkit';
 
 const AiJourneyEvaluationInputSchema = z.object({
   storyId: z.string(),
