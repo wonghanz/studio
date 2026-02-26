@@ -32,7 +32,7 @@ export async function aiWritingFeedback(input: AiWritingFeedbackInput): Promise<
 
 const aiWritingFeedbackPrompt = ai.definePrompt({
   name: 'aiWritingFeedbackPrompt',
-  model: 'googleai/gemini-1.5-pro',
+  model: 'googleai/gemini-2.5-pro',
   input: {schema: AiWritingFeedbackInputSchema},
   output: {schema: AiWritingFeedbackOutputSchema},
   config: {

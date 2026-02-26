@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow for analyzing real-world scenarios from photos to provide English learning guidance.
@@ -40,7 +41,7 @@ export async function aiScenarioAnalysis(input: AiScenarioAnalysisInput): Promis
 
 const aiScenarioAnalysisPrompt = ai.definePrompt({
   name: 'aiScenarioAnalysisPrompt',
-  model: 'googleai/gemini-3.1-pro',
+  model: 'googleai/gemini-2.5-pro',
   input: { schema: AiScenarioAnalysisInputSchema },
   output: { schema: AiScenarioAnalysisOutputSchema },
   prompt: `You are an expert English Language teacher for Malaysian students preparing for {{{examType}}}.

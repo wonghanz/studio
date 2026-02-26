@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A multi-purpose live speaking engine for Roleplay and Group Discussions.
@@ -35,7 +36,7 @@ export type LiveSpeakingOutput = z.infer<typeof LiveSpeakingOutputSchema>;
 
 const liveSpeakingPrompt = ai.definePrompt({
   name: 'liveSpeakingPrompt',
-  model: 'googleai/gemini-1.5-pro',
+  model: 'googleai/gemini-2.5-pro',
   input: { schema: LiveSpeakingInputSchema },
   output: { schema: LiveSpeakingOutputSchema },
   prompt: `You are an AI assistant facilitating a Live Speaking session for a student preparing for {{{examType}}}.

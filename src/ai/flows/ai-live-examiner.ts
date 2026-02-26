@@ -41,7 +41,7 @@ export type LiveExaminerOutput = z.infer<typeof LiveExaminerOutputSchema>;
 
 const liveExaminerPrompt = ai.definePrompt({
   name: 'liveExaminerPrompt',
-  model: 'googleai/gemini-1.5-pro',
+  model: 'googleai/gemini-2.5-pro',
   input: { schema: LiveExaminerInputSchema },
   output: { schema: LiveExaminerOutputSchema },
   prompt: `You are a Senior MUET Speaking Examiner. You are conducting a formal simulation of {{{mode}}}.

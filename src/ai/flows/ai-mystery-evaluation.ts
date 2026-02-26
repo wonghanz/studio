@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview A Genkit flow for evaluating mystery case writing missions based on MUET standards.
@@ -32,7 +33,7 @@ export async function aiMysteryEvaluation(input: AiMysteryEvaluationInput): Prom
 
 const aiMysteryEvaluationPrompt = ai.definePrompt({
   name: 'aiMysteryEvaluationPrompt',
-  model: 'googleai/gemini-3.1-pro',
+  model: 'googleai/gemini-2.5-pro',
   input: { schema: AiMysteryEvaluationInputSchema },
   output: { schema: AiMysteryEvaluationOutputSchema },
   config: {
