@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI agent for providing official MUET/SPM rubric-based feedback on written essays.
@@ -31,7 +32,7 @@ export async function aiWritingFeedback(input: AiWritingFeedbackInput): Promise<
 
 const aiWritingFeedbackPrompt = ai.definePrompt({
   name: 'aiWritingFeedbackPrompt',
-  model: 'googleai/gemini-3.1-pro',
+  model: 'googleai/gemini-1.5-pro',
   input: {schema: AiWritingFeedbackInputSchema},
   output: {schema: AiWritingFeedbackOutputSchema},
   config: {
