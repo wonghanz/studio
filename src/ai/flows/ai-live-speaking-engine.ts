@@ -36,6 +36,7 @@ export type LiveSpeakingOutput = z.infer<typeof LiveSpeakingOutputSchema>;
 
 const liveSpeakingPrompt = ai.definePrompt({
   name: 'liveSpeakingPrompt',
+  model: 'googleai/gemini-3.1-pro',
   input: { schema: LiveSpeakingInputSchema },
   output: { schema: LiveSpeakingOutputSchema },
   prompt: `You are an AI assistant facilitating a Live Speaking practice session for a student preparing for {{{examType}}}.

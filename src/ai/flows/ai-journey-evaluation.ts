@@ -31,6 +31,7 @@ export async function aiJourneyEvaluation(input: AiJourneyEvaluationInput): Prom
 
 const aiJourneyEvaluationPrompt = ai.definePrompt({
   name: 'aiJourneyEvaluationPrompt',
+  model: 'googleai/gemini-3.1-pro',
   input: { schema: AiJourneyEvaluationInputSchema },
   output: { schema: AiJourneyEvaluationOutputSchema },
   prompt: `You are an encouraging English Language Tutor for Malaysian students preparing for their {{{examType}}} exam.

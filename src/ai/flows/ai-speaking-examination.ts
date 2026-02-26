@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI agent for providing official MUET rubric-based feedback on spoken English.
@@ -36,6 +37,7 @@ export type AiSpeakingExaminationOutput = z.infer<typeof AiSpeakingExaminationOu
 
 const aiSpeakingExaminationPrompt = ai.definePrompt({
   name: 'aiSpeakingExaminationPrompt',
+  model: 'googleai/gemini-3.1-pro',
   input: {schema: AiSpeakingExaminationInputSchema},
   output: {schema: AiSpeakingExaminationOutputSchema},
   config: {
