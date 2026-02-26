@@ -32,7 +32,7 @@ export default function ExaminerTestPage() {
   const router = useRouter()
   const mode = searchParams.get('mode') as 'task-a' | 'task-b' || 'task-a'
   
-  const [topic] = useState(TOPICS[Math.floor(Math.random() * TOPICS.length)])
+  const [topic, setTopic] = useState<string | null>(null)
   const [history, setHistory] = useState<{role: 'user' | 'ai', text: string, speakerName?: string}[]>([])
   const [isRecording, setIsRecording] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -48,6 +48,13 @@ export default function ExaminerTestPage() {
   const db = useFirestore()
 
   useEffect(() => {
+    // Select topic on client side only to avoid hydration mismatch
+    setTopic(TOPICS[Math.floor(Math.random() * TOPICS.length)])
+  }, [])
+
+  useEffect(() => {
+    if (!topic) return
+
     // Initial intro
     const intro = mode === 'task-a' 
       ? `Welcome to your individual presentation. Your topic is: "${topic}". You have one minute to organize your thoughts, then you may begin.`
@@ -98,6 +105,7 @@ export default function ExaminerTestPage() {
   }
 
   const processAudio = async (blob: Blob) => {
+    if (!topic) return
     setIsProcessing(true)
     try {
       const reader = new FileReader()
@@ -173,7 +181,9 @@ export default function ExaminerTestPage() {
         <div className="space-y-6">
           <Card className="border-dashed border-2 bg-secondary/10 p-6 text-center">
              <span className="text-[8px] font-black uppercase tracking-tighter text-muted-foreground mb-2 block">Assigned Topic</span>
-             <h3 className="text-lg font-bold italic text-zinc-700">"{topic}"</h3>
+             <h3 className="text-lg font-bold italic text-zinc-700">
+               {topic ? `"${topic}"` : "Initializing exam topic..."}
+             </h3>
           </Card>
 
           {history.map((h, i) => (

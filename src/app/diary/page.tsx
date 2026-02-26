@@ -19,6 +19,7 @@ export default function DiaryPage() {
   const [isGenerating, setIsGenerating] = useState(true)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [diary, setDiary] = useState<AiDiaryGeneratorOutput | null>(null)
+  const [dateHeader, setDateHeader] = useState<string>('')
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const { toast } = useToast()
 
@@ -44,6 +45,8 @@ export default function DiaryPage() {
 
   useEffect(() => {
     fetchDailyContent()
+    // Stable date header to prevent hydration mismatch
+    setDateHeader(new Date().toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }))
   }, [])
 
   const toggleAudio = async () => {
@@ -110,7 +113,7 @@ export default function DiaryPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Today's Feed</h1>
-            <p className="text-xs text-muted-foreground">{new Date().toLocaleDateString('en-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+            <p className="text-xs text-muted-foreground">{dateHeader}</p>
           </div>
         </div>
         <Button variant="outline" size="sm" onClick={fetchDailyContent} className="rounded-full gap-2 text-xs">

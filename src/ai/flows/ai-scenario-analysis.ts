@@ -41,6 +41,7 @@ export async function aiScenarioAnalysis(input: AiScenarioAnalysisInput): Promis
 
 const aiScenarioAnalysisPrompt = ai.definePrompt({
   name: 'aiScenarioAnalysisPrompt',
+  model: 'googleai/gemini-3.1-pro',
   input: { schema: AiScenarioAnalysisInputSchema },
   output: { schema: AiScenarioAnalysisOutputSchema },
   prompt: `You are an expert English Language teacher for Malaysian students preparing for {{{examType}}}.

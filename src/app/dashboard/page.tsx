@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [userName, setUserName] = useState('Scholar')
   const [examTarget, setExamTarget] = useState('SPM')
   const [questProgress, setQuestProgress] = useState(0)
+  const [todayStr, setTodayStr] = useState<string>('')
 
   // Fetch Global Unified Streak
   const streakRef = useMemo(() => user?.uid ? `/users/${user.uid}/writingStreaks/main` : null, [user])
@@ -25,8 +26,11 @@ export default function Dashboard() {
     const savedTarget = localStorage.getItem('native_exam_target') || 'SPM'
     setExamTarget(savedTarget)
     
-    // Fetch today's quest progress from local storage for instant feedback
+    // Set stable today string to avoid hydration mismatches
     const today = new Date().toISOString().split('T')[0]
+    setTodayStr(today)
+    
+    // Fetch today's quest progress from local storage for instant feedback
     const savedQuest = localStorage.getItem(`native_quest_completed_${today}`)
     if (savedQuest) {
       setQuestProgress(JSON.parse(savedQuest).length)
@@ -41,7 +45,7 @@ export default function Dashboard() {
     { title: 'Writing', desc: 'Essay practice', icon: PenTool, color: 'text-accent', bg: 'bg-accent/10', href: '/writing' },
   ]
 
-  const hasWrittenToday = streakData?.lastActivityDate === new Date().toISOString().split('T')[0];
+  const hasWrittenToday = streakData?.lastActivityDate === todayStr;
 
   return (
     <div className="p-6 pb-24 md:pb-6 max-w-5xl mx-auto space-y-8 animate-in fade-in duration-700">
