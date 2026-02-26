@@ -2,8 +2,9 @@
 "use client"
 
 import Link from 'next/link'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { PenTool, Shield, BookOpen, ChevronRight, Zap, Star, History } from 'lucide-react'
 import { APP_NAME } from '@/lib/constants'
 
@@ -100,5 +101,3 @@ export default function WritingSelectionPage() {
     </div>
   )
 }
-
-import { Button } from '@/components/ui/button'

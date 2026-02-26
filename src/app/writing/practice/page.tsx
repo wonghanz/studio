@@ -8,10 +8,10 @@ import { Textarea } from '@/components/ui/textarea'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
-import { Loader2, Save, Send, CheckCircle2, AlertCircle, PenTool, Search, ChevronLeft, RefreshCw } from 'lucide-react'
+import { Loader2, Save, Send, CheckCircle2, AlertCircle, PenTool, Search, ChevronLeft, History } from 'lucide-react'
 import { aiWritingFeedback, type AiWritingFeedbackOutput } from '@/ai/flows/ai-writing-feedback'
 import { useUser, useFirestore } from '@/firebase'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc } from 'firebase/firestore'
 
 export default function StandardPracticePage() {
   const [essay, setEssay] = useState('')
@@ -33,7 +33,7 @@ export default function StandardPracticePage() {
       const draft = localStorage.getItem('native_writing_draft')
       if (draft) setEssay(draft)
     }
-  }, [])
+  }, [toast])
 
   const saveDraft = () => {
     setIsSaving(true)
@@ -45,7 +45,7 @@ export default function StandardPracticePage() {
   }
 
   const handleSubmit = async () => {
-    if (essay.length < 50) {
+    if (essay.trim().split(/\s+/).length < 50) {
       toast({
         title: "Essay too short",
         description: "Please write at least 50 words for a meaningful evaluation.",
@@ -60,7 +60,6 @@ export default function StandardPracticePage() {
       const result = await aiWritingFeedback({ essayText: essay, examType })
       setFeedback(result)
       
-      // Save to History if user is logged in
       if (user && db) {
         addDoc(collection(db, 'users', user.uid, 'writingHistory'), {
           userId: user.uid,
