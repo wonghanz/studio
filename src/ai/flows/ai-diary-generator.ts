@@ -2,6 +2,7 @@
 'use server';
 /**
  * @fileOverview A Genkit flow for generating daily dynamic English learning content.
+ * Handles diverse categories like News, Trends, and Memes for Malaysian students.
  */
 
 import { ai } from '@/ai/genkit';
@@ -31,6 +32,14 @@ const aiDiaryGeneratorPrompt = ai.definePrompt({
   name: 'aiDiaryGeneratorPrompt',
   input: { schema: AiDiaryGeneratorInputSchema },
   output: { schema: AiDiaryGeneratorOutputSchema },
+  config: {
+    safetySettings: [
+      { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_NONE' },
+      { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_NONE' },
+    ],
+  },
   prompt: `You are a dynamic content creator for Malaysian English students preparing for {{{examType}}}.
   
   Generate a today's "Diary Entry" which could be a bite-sized news piece, a viral trend explanation, a popular meme breakdown (focusing on language), or a short podcast-style script.
@@ -54,7 +63,15 @@ const aiDiaryGeneratorFlow = ai.defineFlow(
     outputSchema: AiDiaryGeneratorOutputSchema,
   },
   async (input) => {
-    const { output } = await aiDiaryGeneratorPrompt(input);
-    return output!;
+    try {
+      const { output } = await aiDiaryGeneratorPrompt(input);
+      if (!output) {
+        throw new Error('AI failed to generate diary content.');
+      }
+      return output;
+    } catch (e: any) {
+      console.error('Diary Generation Error:', e);
+      throw e;
+    }
   }
 );
