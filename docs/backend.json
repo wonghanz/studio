@@ -1,4 +1,3 @@
-
 {
   "entities": {
     "Case": {
@@ -76,14 +75,20 @@
     },
     "SpeakingSession": {
       "title": "Speaking Session",
-      "description": "A record of a live speaking session.",
+      "description": "A record of a speaking session including evaluation metrics.",
       "type": "object",
       "properties": {
+        "id": { "type": "string" },
         "userId": { "type": "string" },
-        "mode": { "type": "string", "enum": ["roleplay", "spin", "group"] },
+        "mode": { "type": "string", "enum": ["roleplay", "spin", "group", "standard"] },
         "topic": { "type": "string" },
-        "durationSeconds": { "type": "number" },
-        "bandScore": { "type": "string" },
+        "audioUrl": { "type": "string" },
+        "transcript": { "type": "string" },
+        "taskScore": { "type": "number" },
+        "languageScore": { "type": "number" },
+        "fluencyScore": { "type": "number" },
+        "totalScore": { "type": "number" },
+        "cefrLevel": { "type": "string" },
         "feedback": { "type": "string" },
         "createdAt": { "type": "string", "format": "date-time" }
       }
