@@ -73,6 +73,20 @@
         "badgeId": { "type": "string" },
         "earnedAt": { "type": "string", "format": "date-time" }
       }
+    },
+    "SpeakingSession": {
+      "title": "Speaking Session",
+      "description": "A record of a live speaking session.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "mode": { "type": "string", "enum": ["roleplay", "spin", "group"] },
+        "topic": { "type": "string" },
+        "durationSeconds": { "type": "number" },
+        "bandScore": { "type": "string" },
+        "feedback": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
     }
   },
   "auth": {
@@ -100,6 +114,10 @@
     "/users/{userId}/writingBadges/{badgeId}": {
       "schema": "UserBadge",
       "description": "Badges earned by the user."
+    },
+    "/users/{userId}/speakingSessions/{sessionId}": {
+      "schema": "SpeakingSession",
+      "description": "Collection of all speaking sessions for the user."
     }
   }
 }
