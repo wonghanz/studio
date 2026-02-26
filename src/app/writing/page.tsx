@@ -5,20 +5,10 @@ import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { PenTool, Shield, BookOpen, ChevronRight, Zap, Star, History } from 'lucide-react'
+import { Shield, BookOpen, ChevronRight, Zap, Star, History } from 'lucide-react'
 import { APP_NAME } from '@/lib/constants'
 
 const writingModes = [
-  {
-    id: 'standard',
-    title: 'Standard Practice',
-    desc: 'Focus on traditional essay writing with detailed AI feedback.',
-    icon: PenTool,
-    color: 'text-blue-500',
-    bg: 'bg-blue-50',
-    href: '/writing/practice',
-    tag: 'Classic'
-  },
   {
     id: 'mystery',
     title: 'Mystery Case Files',

@@ -37,7 +37,8 @@ export default function AttemptDetailPage() {
     } else if (attempt.mode === 'journey') {
       router.push(`/writing/journey/${attempt.contentId}/${attempt.level}`)
     } else {
-      router.push('/writing/practice')
+      // If the mode is standard (deprecated) or unknown, go to selection
+      router.push('/writing')
     }
   }
 
@@ -138,9 +139,12 @@ export default function AttemptDetailPage() {
                )}
             </CardContent>
             <CardFooter className="pt-0">
-               <Button onClick={handleRevise} className="w-full gap-2 bg-accent hover:bg-accent/90">
-                 <RefreshCw className="w-4 h-4" /> Revise & Improve
-               </Button>
+               {/* Only show revision button for active modes */}
+               {attempt.mode !== 'standard' && (
+                 <Button onClick={handleRevise} className="w-full gap-2 bg-accent hover:bg-accent/90">
+                   <RefreshCw className="w-4 h-4" /> Revise & Improve
+                 </Button>
+               )}
             </CardFooter>
           </Card>
 
