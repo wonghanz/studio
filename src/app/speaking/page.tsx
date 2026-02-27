@@ -1,8 +1,10 @@
-export const dynamic = "force-dynamic"
+
 "use client"
 
-import { useState, useRef } from 'react'
-import Link from 'next/link'
+export const dynamic = "force-dynamic"
+
+import { useState, useRef } from "react"
+import Link from "next/link"
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
